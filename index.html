@@ -392,7 +392,7 @@ function isAdmin(){ return ADMIN; }
 function roMsg(){ return ADMIN ? "归档赛季 · 只读" : "浏览模式：点右上角『解锁编辑』"; }
 function needAdmin(){ if(!ADMIN){ toast("浏览模式：点右上角『解锁编辑』"); return true; } return false; }
 /* ===== 在线发布（Cloudflare Worker 代理 → 仓库 data.json，所有人可见） ===== */
-const PUBLISH_URL_DEFAULT = "";              // 部署 Worker 后把它的网址填这里(或在应用内粘贴)
+const PUBLISH_URL_DEFAULT = "https://myskme-publish.wzc1020.workers.dev"; // 你的 Worker 网址(命名 myskme-publish 即匹配；不同则在应用内『发布设置』改)
 const PUBLISH_KEY = "myskme_publish_url";    // 本地保存的 Worker 网址
 const DIRTY_KEY   = "myskme_dirty";          // 是否有未发布的本地修改
 const DATA_URL    = "data.json";             // 仓库里的共享数据(GitHub Pages 同源)
