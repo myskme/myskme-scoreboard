@@ -16,7 +16,7 @@
    "recorder": "Mr.Wang",
    "startDate": "2026-06-01",
    "createdAt": "2026-06-01T08:00:00.000Z",
-   "updatedAt": "2026-06-20T12:00:00.000Z",
+   "updatedAt": "2026-06-20T15:06:30.852Z",
    "status": "active",
    "archivedAt": null,
    "groups": [
@@ -561,7 +561,7 @@
       "comp": 0
      },
      "les_3": {
-      "cls": 2,
+      "cls": 1,
       "comp": 2
      },
      "les_4": {
@@ -773,5 +773,6 @@
     }
    }
   }
- ]
+ ],
+ "publishedAt": "2026-06-20T15:07:59.913Z"
 }
