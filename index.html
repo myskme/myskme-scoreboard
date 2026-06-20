@@ -66,14 +66,24 @@ h1.brand em{font-style:normal;-webkit-text-fill-color:var(--gold2);letter-spacin
 nav.tabs{position:sticky;top:0;z-index:30;display:flex;gap:2px;justify-content:center;flex-wrap:wrap;
   margin:18px -20px 22px;padding:10px 20px;background:rgba(10,10,12,.86);
   backdrop-filter:blur(10px);border-top:1px solid var(--line2);border-bottom:1px solid var(--line)}
-.tab{position:relative;background:none;border:0;color:var(--ink2);font-family:var(--serif);
-  font-size:14px;letter-spacing:.12em;padding:8px 15px;cursor:pointer;transition:color .25s}
+.tab{position:relative;display:inline-flex;align-items:center;gap:7px;background:none;border:0;color:var(--ink2);font-family:var(--serif);
+  font-size:14px;letter-spacing:.1em;padding:8px 14px;cursor:pointer;transition:color .25s}
 .tab::after{content:'';position:absolute;left:50%;bottom:2px;width:0;height:2px;background:var(--gold);
   transform:translateX(-50%);transition:width .3s var(--ease-back);box-shadow:var(--glow-soft)}
 .tab:hover{color:var(--ink)}
 .tab.on{color:var(--gold2)}
-.tab.on::after{width:70%}
+.tab.on::after{width:72%}
 .tab .tnum{font-size:10px;color:var(--ink3);margin-left:3px;vertical-align:super}
+.tab svg.tic{width:17px;height:17px;stroke:currentColor;fill:none;stroke-width:1.5;flex:none;opacity:.78;
+  transition:transform .3s var(--ease-back),opacity .25s}
+.tab:hover svg.tic{transform:translateY(-1px) scale(1.05)}
+.tab.on svg.tic{opacity:1;filter:drop-shadow(0 0 6px rgba(201,166,74,.45))}
+/* 全局线性图标统一：圆润端点/接头，黑金线描质感 */
+.stamp svg,button.btn svg,.icon-btn svg,.ec-ico,.hint svg,.empty-state svg,.tab svg.tic,svg.chart,.podium-svg{stroke-linecap:round;stroke-linejoin:round}
+/* 键盘焦点环（可访问性） */
+.btn:focus-visible,.tab:focus-visible,.icon-btn:focus-visible,.tri button:focus-visible,.seg button:focus-visible,.grp-chip:focus-visible,.cell:focus-visible,select:focus-visible{outline:2px solid var(--gold2);outline-offset:2px;border-radius:2px}
+/* 尊重系统“减少动态效果” */
+@media (prefers-reduced-motion: reduce){*{animation-duration:.001ms!important;animation-iteration-count:1!important;transition-duration:.01ms!important;scroll-behavior:auto!important}}
 
 /* ============== 通用组件 ============== */
 .panel{background:var(--bg2);border:1px solid var(--line);border-radius:var(--r);padding:18px;margin-bottom:var(--gap);position:relative;
@@ -141,11 +151,11 @@ label.fld{display:flex;flex-direction:column;gap:5px;font-size:11px;color:var(--
 .seg button:last-child{border-right:0}
 .seg button.on{background:linear-gradient(180deg,rgba(201,166,74,.2),rgba(201,166,74,.06));color:var(--gold2)}
 
-.grid-scroll{overflow-x:auto;border:1px solid var(--line);border-radius:var(--r);background:var(--bg2)}
+.grid-scroll{overflow:auto;max-height:76vh;border:1px solid var(--line);border-radius:var(--r);background:var(--bg2);overscroll-behavior:contain}
 table.sb{border-collapse:separate;border-spacing:0;width:100%;min-width:640px}
 table.sb th,table.sb td{border-right:1px solid var(--line2);border-bottom:1px solid var(--line2);padding:0;text-align:center}
-table.sb thead th{background:var(--bg3);position:sticky;top:0;z-index:5;font-weight:400;color:var(--ink2);font-size:11px;letter-spacing:.06em;padding:7px 4px}
-table.sb thead tr.h1 th{border-bottom:1px solid var(--line);color:var(--gold2);font-size:12px;letter-spacing:.1em;padding:9px 4px}
+table.sb thead th{background:var(--bg3);position:sticky;top:34px;z-index:5;font-weight:400;color:var(--ink2);font-size:11px;letter-spacing:.06em;padding:7px 4px}
+table.sb thead tr.h1 th{top:0;border-bottom:1px solid var(--line);color:var(--gold2);font-size:12px;letter-spacing:.1em;padding:9px 4px}
 .ses-date{display:block;color:var(--ink3);font-size:10px;margin-top:2px;letter-spacing:.02em}
 .ses-edit{cursor:pointer}
 .ses-edit:hover{color:var(--gold2)}
@@ -300,10 +310,10 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
 @keyframes flashPulse{0%{opacity:0}30%{opacity:1}100%{opacity:0}}
 
 .empty-state{text-align:center;padding:40px 20px;color:var(--ink3)}
-.empty-state svg{width:48px;height:48px;stroke:var(--ink4);fill:none;stroke-width:1;margin-bottom:12px}
+.empty-state svg{width:46px;height:46px;stroke:var(--ink3);fill:none;stroke-width:1.4;margin-bottom:12px}
 
 .hint{font-size:11px;color:var(--ink3);letter-spacing:.04em;display:inline-flex;align-items:center;gap:5px}
-.hint svg{width:13px;height:13px;stroke:var(--gold3);fill:none;stroke-width:1.5}
+.hint svg{width:13px;height:13px;stroke:var(--gold);fill:none;stroke-width:1.5;opacity:.85}
 
 /* ============== 响应式 ============== */
 @media(max-width:760px){
@@ -342,12 +352,12 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
   </header>
 
   <nav class="tabs" id="tabs">
-    <button class="tab on" data-tab="board">记分台</button>
-    <button class="tab" data-tab="rank">排行榜</button>
-    <button class="tab" data-tab="group">小组战</button>
-    <button class="tab" data-tab="stats">数据统计</button>
-    <button class="tab" data-tab="season">赛季管理</button>
-    <button class="tab" data-tab="data">数据·部署</button>
+    <button class="tab on" data-tab="board"><svg class="tic" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="1.5"/><path d="M3.5 9.2h17M10 9.2V20"/><path d="M6 13h2.5M6 16.2h2.5"/></svg><span>记分台</span></button>
+    <button class="tab" data-tab="rank"><svg class="tic" viewBox="0 0 24 24"><path d="M7.5 4h9v3.8a4.5 4.5 0 0 1-9 0V4z"/><path d="M7.5 5.2H5a1.8 1.8 0 0 0 2.3 3.2M16.5 5.2H19a1.8 1.8 0 0 1-2.3 3.2"/><path d="M12 12.3v2.7M8.5 20.5h7l-1-4.5h-5z"/></svg><span>排行榜</span></button>
+    <button class="tab" data-tab="group"><svg class="tic" viewBox="0 0 24 24"><path d="M12 3l7 2.4v4.8c0 4.8-3.3 7.6-7 9.3-3.7-1.7-7-4.5-7-9.3V5.4z"/><path d="M12 3.3v17"/></svg><span>小组战</span></button>
+    <button class="tab" data-tab="stats"><svg class="tic" viewBox="0 0 24 24"><path d="M4 3.5v17h16"/><path d="M8 17v-4.5M12 17V9M16 17v-6.5"/><path d="M7.5 9.5l3.2-3.4 3 2.2 4-4.8"/></svg><span>数据统计</span></button>
+    <button class="tab" data-tab="season"><svg class="tic" viewBox="0 0 24 24"><path d="M7.5 4H15a2.6 2.6 0 0 1 2.6 2.6V20H10A2.6 2.6 0 0 1 7.5 17.4V4z"/><path d="M7.5 4a2.2 2.2 0 0 0-2.2 2.2V8h2.2M17.6 20a2.2 2.2 0 0 0 2.2-2.2v-1.6h-2.2"/><path d="M10.3 8.8h5M10.3 12.2h4"/></svg><span>赛季管理</span></button>
+    <button class="tab" data-tab="data"><svg class="tic" viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M12 20.5v-6.6M9.6 16l2.4-2.3 2.4 2.3"/></svg><span>数据·部署</span></button>
   </nav>
 
   <main id="view"></main>
@@ -518,7 +528,11 @@ function normalize(d){
     if(!Array.isArray(s.students)) s.students=[];
     if(!Array.isArray(s.sessions)) s.sessions=[];
     if(!s.scores||typeof s.scores!=="object") s.scores={};
-    s.sessions.forEach((se,i)=>{ if(se.index==null) se.index=i+1; if(!Array.isArray(se.winningGroupIds)) se.winningGroupIds=[]; });
+    s.groups.forEach((g,i)=>{ if(g&&typeof g==='object'){ g.id=g.id||uid("grp"); g.name=(g.name==null?"":String(g.name))||("第"+(i+1)+"组"); g.color=g.color||GROUP_COLORS[i%GROUP_COLORS.length]; } });
+    s.students=s.students.filter(st=>st&&typeof st==='object');
+    s.students.forEach((st,i)=>{ st.id=st.id||uid("stu"); st.name=(st.name==null?"":String(st.name))||("学生"+(i+1)); if(st.active===undefined) st.active=true; if(st.order==null) st.order=i+1; });
+    s.sessions=s.sessions.filter(se=>se&&typeof se==='object');
+    s.sessions.forEach((se,i)=>{ se.id=se.id||uid("les"); if(se.index==null) se.index=i+1; se.date=se.date||todayStr(); if(!Array.isArray(se.winningGroupIds)) se.winningGroupIds=[]; });
   });
   if(!d.seasons.length) return freshDB();
   if(!d.currentSeasonId || !d.seasons.some(s=>s.id===d.currentSeasonId)) d.currentSeasonId=d.seasons[0].id;
@@ -672,11 +686,11 @@ function confirmModal(title,body,onYes,danger){
 
 /* SVG 图标库 */
 const ICO = {
-  cal:'<svg viewBox="0 0 24 24"><rect x="3" y="5" width="18" height="16" rx="1"/><path d="M3 9h18M8 3v4M16 3v4"/></svg>',
-  stamp:'<svg viewBox="0 0 24 24"><path d="M12 3a3 3 0 0 0-3 3c0 2 2 3 2 5H9a2 2 0 0 0 0 4h6a2 2 0 0 0 0-4h-2c0-2 2-3 2-5a3 3 0 0 0-3-3z"/><path d="M5 20h14"/></svg>',
-  clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 7v5l3 2"/></svg>',
-  pen:'<svg viewBox="0 0 24 24"><path d="M4 20l4-1 11-11-3-3L5 16l-1 4z"/></svg>',
-  user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M4 21c0-4 4-6 8-6s8 2 8 6"/></svg>'
+  cal:'<svg viewBox="0 0 24 24"><rect x="3.5" y="5" width="17" height="15.5" rx="1.6"/><path d="M3.5 9.3h17M8 3v3.6M16 3v3.6"/><path d="M7 13h2M11 13h2M15 13h2M7 16.5h2M11 16.5h2"/></svg>',
+  stamp:'<svg viewBox="0 0 24 24"><rect x="6" y="13.4" width="12" height="3.4" rx="1"/><path d="M9.3 13.2l.9-3.4a2.2 2.2 0 0 1-1.2-2V6a2.7 2.7 0 0 1 2.7-2.7h.6A2.7 2.7 0 0 1 15 6v1.8a2.2 2.2 0 0 1-1.2 2l.9 3.4"/><path d="M4.5 20.4h15"/></svg>',
+  clock:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M12 7v5.2l3.3 2"/></svg>',
+  pen:'<svg viewBox="0 0 24 24"><path d="M14.5 5.6l3.9 3.9M4 20l1-4 10.5-10.5a1.7 1.7 0 0 1 2.4 0l1.1 1.1a1.7 1.7 0 0 1 0 2.4L8.5 19z"/></svg>',
+  user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>'
 };
 
 /* =========================================================
@@ -714,8 +728,9 @@ function render(){
    记分台
    ========================================================= */
 function seal(name,color){
+  const nm = String(name==null?"":name);
   const c = color? `--gc:var(${color})` : "";
-  return `<span class="seal" ${color?'data-c="1"':''} style="${c}"><span class="seal-glyph">${esc(name.slice(0,1))}</span></span>`;
+  return `<span class="seal" ${color?'data-c="1"':''} style="${c}"><span class="seal-glyph">${esc(nm.slice(0,1))}</span></span>`;
 }
 function viewBoard(){
   const ss=curSeason();
@@ -780,7 +795,8 @@ function cellHtml(stuId,sesId,c,field){
   const mx=maxFor(field);
   let cls="cell"; if(v==null) cls+=" empty"; else if(v>mx) cls+=" bad"; else if(v===mx) cls+=" full";
   if(isLocked()) cls+=" locked";
-  return `<td><div class="${cls}" data-stu="${stuId}" data-ses="${sesId}" data-field="${field}" data-v="${v==null?'':v}">${v==null?'—':v}</div></td>`;
+  const aria=`${field==='cls'?'课堂':'作文'} ${v==null?'未录':v+'分'}`;
+  return `<td><div class="${cls}" role="button" tabindex="${isLocked()?-1:0}" aria-label="${aria}" data-stu="${stuId}" data-ses="${sesId}" data-field="${field}" data-v="${v==null?'':v}">${v==null?'—':v}</div></td>`;
 }
 function boardLesson(ss){
   if(!ss.sessions.length) return emptyState("还没有次课","点上方『添加次课』新建第一次课");
@@ -810,7 +826,7 @@ function boardLesson(ss){
     <label class="fld">选择次课<select onchange="UI.lessonIdx=+this.value;render()">${opts}</select></label>
     <label class="fld">日期<input type="date" value="${se.date||''}" onchange="setSessionDate('${se.id}',this.value)" ${isLocked()?'disabled':''}></label>
     <span class="spacer grow"></span>
-    <button class="btn sm gold" onclick="teamBattle('${se.id}')" ${isLocked()?'disabled':''}><svg viewBox="0 0 24 24"><path d="M5 21V5l7-2 7 2v16M9 9h6M9 13h6"/></svg>团体战结算</button>
+    <button class="btn sm gold" onclick="teamBattle('${se.id}')" ${isLocked()?'disabled':''}><svg viewBox="0 0 24 24"><path d="M6 21V3.5"/><path d="M6 5h11l-3 3.2 3 3.3H6"/></svg>团体战结算</button>
     <button class="btn sm danger" onclick="delSession('${se.id}')" ${isLocked()?'disabled':''}>删除本次课</button>
   </div>
   <div class="row" style="margin-bottom:10px">
@@ -853,6 +869,12 @@ document.addEventListener("click",e=>{
   setTimeout(()=>cell.classList.remove("bump"),420);
   updateRowCum();
 });
+// 键盘录分：聚焦格子按 Enter/空格 即加分
+document.addEventListener("keydown",e=>{
+  if(e.key!=="Enter" && e.key!==" ") return;
+  const cell=e.target.closest && e.target.closest(".cell");
+  if(cell){ e.preventDefault(); cell.click(); }
+});
 function updateRowCum(){
   // 一处改分会改变全班相对名次/累计条比例，故重算并刷新所有可见行
   const ss=curSeason();
@@ -885,6 +907,7 @@ function doAddStudent(){
   save(); closeModal(); render(); toast("已添加 "+name);
 }
 function renameStudent(id){
+  if(isLocked()) return toast("归档赛季只读");
   const ss=curSeason(); const st=ss.students.find(s=>s.id===id); if(!st) return;
   openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <h3>编辑学生</h3>
@@ -898,12 +921,14 @@ function renameStudent(id){
     <button class="btn gold" onclick="doRename('${id}')">保存</button></div>`);
 }
 function doRename(id){
+  if(isLocked()) return toast("归档赛季只读");
   const ss=curSeason(); const st=ss.students.find(s=>s.id===id); if(!st) return;
   const n=($("#rnName").value||"").trim(); if(!n) return toast("姓名不能为空");
   st.name=n; st.note=($("#rnNote").value||"").trim();
   save(); closeModal(); render();
 }
 function delStudent(id){
+  if(isLocked()) return toast("归档赛季只读");
   const ss=curSeason(); const st=ss.students.find(s=>s.id===id); if(!st) return;
   confirmModal("删除学生？",`将移除 <b>${esc(st.name)}</b> 及其全部历史分数。<br>建议先到『数据·部署』导出 JSON 备份。`,()=>{
     ss.students=ss.students.filter(s=>s.id!==id); delete ss.scores[id];
@@ -918,6 +943,7 @@ function addSession(){
   save(); UI.lessonIdx=ss.sessions.length-1; render(); toast("已添加 第"+idx+"次课");
 }
 function editSession(id){
+  if(isLocked()) return toast("归档赛季只读");
   const ss=curSeason(); const se=ss.sessions.find(s=>s.id===id); if(!se) return;
   openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
     <h3>第${se.index}次课</h3>
@@ -931,6 +957,7 @@ function editSession(id){
     <button class="btn gold" onclick="doEditSession('${id}')">保存</button></div>`);
 }
 function doEditSession(id){
+  if(isLocked()) return toast("归档赛季只读");
   const ss=curSeason(); const se=ss.sessions.find(s=>s.id===id); if(!se) return;
   se.date=$("#esDate").value; se.note=($("#esNote").value||"").trim();
   save(); closeModal(); render();
@@ -1121,7 +1148,7 @@ function viewGroup(){
       <div class="seg"><button class="${metric==='avg'?'on':''}" onclick="UI.groupMetric='avg';render()">人均榜</button>
       <button class="${metric==='total'?'on':''}" onclick="UI.groupMetric='total';render()">总分榜</button></div>
     </div>
-    ${best?`<div class="row" style="margin-bottom:12px"><span class="pill" style="color:var(--gold2);border-color:var(--gold)">🏆 当前最佳小组：${esc(best.g.name)} · ${metric==='total'?('总分 '+best.total):('人均 '+best.avg.toFixed(2))}</span></div>`:`<div class="muted" style="margin-bottom:12px">暂无可评定小组（需至少 ${DB.settings.minGroupMembers} 名有成绩成员）</div>`}
+    ${best?`<div class="row" style="margin-bottom:12px"><span class="pill" style="color:var(--gold2);border-color:var(--gold);display:inline-flex;align-items:center;gap:6px"><svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;flex:none"><path d="M8 4h8v3.8a4 4 0 0 1-8 0V4z"/><path d="M8 5.2H5.5A1.7 1.7 0 0 0 7.3 8.4M16 5.2h2.5A1.7 1.7 0 0 1 16.7 8.4"/><path d="M12 11.8v2.6M9 19.5h6l-1-4h-4z"/></svg>当前最佳小组：${esc(best.g.name)} · ${metric==='total'?('总分 '+best.total):('人均 '+best.avg.toFixed(2))}</span></div>`:`<div class="muted" style="margin-bottom:12px">暂无可评定小组（需至少 ${DB.settings.minGroupMembers} 名有成绩成员）</div>`}
     <div class="grp-bars">${bars}</div>
     ${unas?`<div class="row" style="margin-top:14px"><span class="hint" style="color:var(--red2)"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5"/></svg>${unas} 人未分组，未计入小组战</span>
       <button class="btn sm" onclick="autoGroup()">自动均分到各组</button></div>`:""}
@@ -1330,7 +1357,7 @@ function viewSeason(){
   <div class="panel">
     <div class="panel-h"><span class="dot"></span>当前赛季 · 重置</div>
     <div class="row">
-      <button class="btn" onclick="resetKeepRoster()"><svg viewBox="0 0 24 24"><path d="M4 4v6h6M20 20v-6h-6M4 10a8 8 0 0 1 14-3M20 14a8 8 0 0 1-14 3"/></svg>重置·保留花名册</button>
+      <button class="btn" onclick="resetKeepRoster()"><svg viewBox="0 0 24 24"><path d="M20 11a8 8 0 0 0-14-4.5L3 9M3 4v5h5"/><path d="M4 13a8 8 0 0 0 14 4.5L21 15M21 20v-5h-5"/></svg>重置·保留花名册</button>
       <button class="btn danger" onclick="resetAll()">重置·全部清空</button>
       <span class="hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>推荐用『复制开新季』保留旧季存档，更安全</span>
     </div>
@@ -1448,13 +1475,13 @@ function viewData(){
       <button class="btn" onclick="document.getElementById('impFile').click()">选择文件导入</button>
       <button class="btn sm" style="margin-top:8px" onclick="restoreBackup()">恢复上次备份</button>
       <input type="file" id="impFile" accept=".json" style="display:none" onchange="importJSON(this)"></div>
-    <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><rect x="4" y="3" width="16" height="18" rx="1"/><path d="M8 8h8M8 12h8M8 16h5"/></svg>
+    <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><rect x="3.5" y="4" width="17" height="16" rx="1.6"/><path d="M3.5 9.4h17M3.5 14.7h17M9.2 9.4V20"/></svg>
       <h4>CSV 导出</h4><p>当前赛季导出为 Excel 可读的 CSV（含 BOM 防乱码），复刻老师原表头。</p>
       <button class="btn" onclick="exportCSV()">导出 CSV</button></div>
-    <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><circle cx="12" cy="8" r="4"/><path d="M5 21c0-4 4-6 7-6s7 2 7 6"/></svg>
+    <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><path d="M3 21h18"/><rect x="9" y="8.5" width="6" height="12.5"/><rect x="3" y="13" width="6" height="8"/><rect x="15" y="11" width="6" height="10"/><path d="M12 2.4l.95 1.92 2.12.3-1.53 1.5.36 2.11L12 7.64l-1.9 1 .36-2.11-1.54-1.5 2.13-.3z"/></svg>
       <h4>前三名海报</h4><p>金银铜领奖海报，可下载 PNG 班级群发 / 教室张贴。</p>
       <button class="btn" onclick="showPoster()">生成海报</button></div>
-    <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><rect x="5" y="3" width="14" height="18" rx="1"/><path d="M9 8h6M9 12h6"/></svg>
+    <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><path d="M7 8.5V3.5h10v5"/><path d="M7 17.5H5a2 2 0 0 1-2-2V11a2.5 2.5 0 0 1 2.5-2.5h13A2.5 2.5 0 0 1 21 11v4.5a2 2 0 0 1-2 2h-2"/><rect x="7" y="14.5" width="10" height="6" rx="1"/><path d="M16.5 11.5h.5"/></svg>
       <h4>打印记分表</h4><p>打印 / 导出 PDF 友好的当前榜单。</p>
       <button class="btn" onclick="window.print()">打印</button></div>
     <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2zM2 12h20M12 2a15 15 0 0 1 0 20M12 2a15 15 0 0 0 0 20"/></svg>
@@ -1464,12 +1491,14 @@ function viewData(){
   <div class="panel">
     <div class="panel-h"><span class="dot"></span>数据存在哪里？ <small>重要 · 请务必读一次</small></div>
     <p style="color:var(--ink2);font-size:13.5px;line-height:1.8">
-    📌 <b style="color:var(--gold2)">代码在云端，数据在你这台浏览器。</b><br>
+    <svg viewBox="0 0 24 24" style="width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.6;stroke-linecap:round;stroke-linejoin:round;vertical-align:-2px"><path d="M9 3h6l-1 6 4 3v2H6v-2l4-3z"/><path d="M12 14v7"/></svg> <b style="color:var(--gold2)">代码在云端，数据在你这台浏览器。</b><br>
     这个网页放到 GitHub / Netlify 后，谁都能打开它；但你录入的分数存在<b>当前浏览器的本地存储 (localStorage)</b> 里，<u>不会自动同步</u>到别的设备。<br>
     换电脑、清缓存、换浏览器 = 看不到原来的数据。所以：<br>
     ① 每节课后随手点一次 <b>「导出 JSON」</b> 存到 iCloud / 网盘；<br>
     ② 换设备时用 <b>「导入」</b> 把那份 JSON 读回来即可完整还原。
     </p>
+    <hr class="div">
+    <label class="row" style="cursor:pointer;font-size:13px;color:var(--ink2)"><input type="checkbox" ${DB.settings.fx?'checked':''} onchange="toggleFx(this.checked)" style="width:auto;accent-color:#c9a64a"> 课堂动效（飞出的数字 / 高光闪动）—— 投影或想安静时可关</label>
     <div class="muted" style="margin-top:8px">当前库：${DB.seasons.length} 个赛季 · 当前「${esc(ss.name)}」${ss.students.length} 人 · schema v${DB.schemaVersion}</div>
   </div>`;
 }
@@ -1501,6 +1530,7 @@ function restoreBackup(silent){
   try{ DB=normalize(migrate(JSON.parse(raw))); save(); UI.lessonIdx=0; render(); toast("已恢复到导入前"); }
   catch(e){ console.error(e); toast("恢复失败"); }
 }
+function toggleFx(on){ DB.settings.fx=!!on; save(); toast(on?"课堂动效已开":"课堂动效已关"); }
 function exportCSV(){
   const ss=curSeason();
   let head=["序号","小组","姓名"];
@@ -1553,7 +1583,7 @@ function cardSVG(ss,r,total){
   const rankTxt=r.rank===1?"冠军 · CHAMPION":r.rank<=3?"前三甲 · TOP 3":"第 "+r.rank+" 名";
   const gc=g?chex(g.color):"#c9a64a";
   const W=440,H=600;
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="'Songti SC','STSong',serif">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="'Songti SC','STSong',serif" stroke-linecap="round" stroke-linejoin="round">
     <defs>
       <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0a0c"/><stop offset="1" stop-color="#16161a"/></linearGradient>
       <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8c768"/><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#c9a64a"/></linearGradient>
@@ -1627,7 +1657,7 @@ function posterSVG(ss){
       <text y="${-58*s}" text-anchor="middle" fill="#c9a64a" font-size="22">${["","Ⅰ","Ⅱ","Ⅲ"][r.rank]||r.rank}</text>
     </g>`;
   });
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480" font-family="'Songti SC','STSong',serif">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480" font-family="'Songti SC','STSong',serif" stroke-linecap="round" stroke-linejoin="round">
     <defs><filter id="pglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     <radialGradient id="pg" cx="50%" cy="0%" r="80%"><stop offset="0" stop-color="#c9a64a" stop-opacity=".18"/><stop offset="1" stop-color="#c9a64a" stop-opacity="0"/></radialGradient>
     <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c9a64a"/><stop offset=".5" stop-color="#e8c768"/><stop offset="1" stop-color="#c9a64a"/></linearGradient></defs>
@@ -1668,7 +1698,7 @@ function svgToPng(wrapId,filename){
 
 /* ---------- 公共空状态 ---------- */
 function emptyState(t,s){
-  return `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h10"/></svg>
+  return `<div class="empty-state"><svg viewBox="0 0 24 24"><path d="M6.5 3h7l4 4v13.5a.5.5 0 0 1-.5.5h-10a.5.5 0 0 1-.5-.5z"/><path d="M13.5 3v4h4"/><path d="M9 13h6M9 16.5h4"/></svg>
     <div style="font-size:15px;color:var(--ink2)">${esc(t)}</div><div class="muted" style="margin-top:6px">${esc(s)}</div></div>`;
 }
 
@@ -1678,7 +1708,7 @@ document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{UI.
 Object.assign(window,{setSbView,setTri,addStudent,doAddStudent,renameStudent,doRename,delStudent,addSession,editSession,doEditSession,delSession,teamBattle,doTeamBattle,setSessionDate,
   closeModal,confirmModal,assignGroup,autoGroup,addGroup,renameGroup,delGroup,fixAnomaly,
   switchSeason,newSeason,doNewSeason,editSeason,doEditSeason,archiveSeason,unarchive,dupSeason,delSeason,resetKeepRoster,resetAll,
-  exportJSON,importJSON,restoreBackup,exportCSV,showDeploy,showCard,showPoster,svgToPng,UI});
+  exportJSON,importJSON,restoreBackup,toggleFx,exportCSV,showDeploy,showCard,showPoster,svgToPng,UI});
 load(); render();
 // 每分钟刷新"更新于"相对时间
 setInterval(renderStamps,60000);
