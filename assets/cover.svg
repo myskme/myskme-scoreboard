@@ -1,0 +1,66 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1280" height="440" viewBox="0 0 1280 440" font-family="'Noto Serif SC','Songti SC','STSong',serif">
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0a0c"/><stop offset="1" stop-color="#15151a"/></linearGradient>
+    <radialGradient id="glowtop" cx="50%" cy="-6%" r="62%"><stop offset="0" stop-color="#c9a64a" stop-opacity=".24"/><stop offset="1" stop-color="#c9a64a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#c9a64a"/><stop offset=".5" stop-color="#e8c768"/><stop offset="1" stop-color="#c9a64a"/></linearGradient>
+    <linearGradient id="goldh" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#7a6320"/><stop offset=".5" stop-color="#e8c768"/><stop offset="1" stop-color="#7a6320"/></linearGradient>
+    <filter id="soft"><feGaussianBlur stdDeviation="3.4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+    <filter id="grain"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" result="n"/><feColorMatrix in="n" type="saturate" values="0"/><feComponentTransfer><feFuncA type="linear" slope="0.04"/></feComponentTransfer><feComposite operator="over" in2="SourceGraphic"/></filter>
+  </defs>
+
+  <rect width="1280" height="440" fill="url(#bg)"/>
+  <rect width="1280" height="440" fill="url(#glowtop)"/>
+  <rect width="1280" height="440" filter="url(#grain)" opacity="0.5"/>
+
+  <!-- 放射金线 -->
+  <g opacity=".5" stroke="#c9a64a" stroke-opacity=".12" stroke-width="1">
+    <g transform="translate(640 110)">
+      <line x1="0" y1="0" x2="-560" y2="-90"/><line x1="0" y1="0" x2="560" y2="-90"/>
+      <line x1="0" y1="0" x2="-600" y2="40"/><line x1="0" y1="0" x2="600" y2="40"/>
+      <line x1="0" y1="0" x2="-440" y2="200"/><line x1="0" y1="0" x2="440" y2="200"/>
+    </g>
+  </g>
+
+  <!-- 边框 + 四角饰 -->
+  <rect x="18" y="18" width="1244" height="404" fill="none" stroke="#c9a64a" stroke-opacity=".45"/>
+  <rect x="26" y="26" width="1228" height="388" fill="none" stroke="#c9a64a" stroke-opacity=".16"/>
+  <g stroke="#e8c768" stroke-width="2" fill="none">
+    <path d="M18 50 V18 H50"/><path d="M1262 50 V18 H1230"/><path d="M18 390 V422 H50"/><path d="M1262 390 V422 H1230"/>
+  </g>
+
+  <!-- 狼先生纹徽 -->
+  <g transform="translate(596 50) scale(0.9)">
+    <path d="M27 33 L15 5 L44 29 Z M73 33 L85 5 L56 29 Z" fill="url(#gold)"/>
+    <path d="M33 29 L50 24 L67 29 L75 45 L62 64 L50 75 L38 64 L25 45 Z" fill="url(#gold)" filter="url(#soft)"/>
+    <path d="M35 42 L45 39 L44 46 Z M65 42 L55 39 L56 46 Z" fill="#0a0a0c"/>
+    <path d="M50 56 L45 61 L50 67 L55 61 Z" fill="#0a0a0c"/>
+    <path d="M50 56 L50 48 M40 50 L46 53 M60 50 L54 53" stroke="#0a0a0c" stroke-width="1.4" fill="none"/>
+  </g>
+  <path d="M520 78 H586 M694 78 H760" stroke="#c9a64a" stroke-opacity=".55"/>
+  <path d="M520 78 l8 -5 M520 78 l8 5 M760 78 l-8 -5 M760 78 l-8 5" stroke="#c9a64a" stroke-opacity=".55" fill="none"/>
+
+  <!-- 标题 -->
+  <text x="640" y="186" text-anchor="middle" fill="url(#gold)" font-size="58" font-weight="300" letter-spacing="10">王老师的英语课<tspan fill="#e8c768"> · MYSKME</tspan></text>
+  <text x="640" y="228" text-anchor="middle" fill="#a8a090" font-size="22" letter-spacing="14">课 堂 记 分 编 年 史</text>
+  <text x="640" y="262" text-anchor="middle" fill="#6a6458" font-size="14" letter-spacing="4" font-style="italic">Make Yourself Special &amp; Kind ｜ 做独特而善良的自己</text>
+
+  <!-- 领奖台 -->
+  <g transform="translate(640 392)">
+    <g text-anchor="middle">
+      <!-- 银 -->
+      <rect x="-150" y="-44" width="84" height="44" fill="#16161a" stroke="#c9a64a" stroke-opacity=".5"/>
+      <circle cx="-108" cy="-66" r="22" fill="#1c1c22" stroke="#c9a64a"/><text x="-108" y="-60" fill="#c9a64a" font-size="18">Ⅱ</text>
+      <!-- 金 -->
+      <rect x="-42" y="-64" width="84" height="64" fill="#16161a" stroke="#e8c768" stroke-opacity=".7"/>
+      <circle cx="0" cy="-90" r="26" fill="#1c1c22" stroke="#e8c768" filter="url(#soft)"/><text x="0" y="-83" fill="#e8c768" font-size="22">Ⅰ</text>
+      <path d="M0 -126 l4 9 9 1 -6.5 6 1.5 9 -8 -4.5 -8 4.5 1.5 -9 -6.5 -6 9 -1 Z" fill="#e8c768" filter="url(#soft)"/>
+      <!-- 铜 -->
+      <rect x="66" y="-32" width="84" height="32" fill="#16161a" stroke="#c9a64a" stroke-opacity=".4"/>
+      <circle cx="108" cy="-54" r="20" fill="#1c1c22" stroke="#c9a64a" stroke-opacity=".8"/><text x="108" y="-48" fill="#c9a64a" font-size="16">Ⅲ</text>
+    </g>
+  </g>
+
+  <!-- 右下模块小字 -->
+  <text x="1234" y="404" text-anchor="end" fill="#3a382f" font-size="12" letter-spacing="2">记分 · 排行 · 小组 · 统计 · 赛季 · 部署</text>
+  <text x="46" y="404" fill="#3a382f" font-size="12" letter-spacing="2">单文件 · 离线可用 · localStorage</text>
+</svg>

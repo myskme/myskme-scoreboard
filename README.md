@@ -1,10 +1,26 @@
-# 王老师的英语课 · MYSKME 课堂记分编年史
+<p align="center">
+  <img src="assets/cover.svg" alt="王老师的英语课 · MYSKME 课堂记分编年史" width="100%">
+</p>
 
-> Make Yourself Special & Kind ｜ 做独特而善良的自己
+<h1 align="center">王老师的英语课 · MYSKME 课堂记分编年史</h1>
+
+<p align="center"><em>Make Yourself Special &amp; Kind ｜ 做独特而善良的自己</em></p>
+
+<p align="center">
+  <a href="https://myskme.github.io/myskme-scoreboard/"><img src="https://img.shields.io/badge/▶_在线打开-myskme.github.io-e8c768?style=for-the-badge&labelColor=0a0a0c" alt="在线打开"></a>
+</p>
+
+<p align="center">
+  <img src="https://img.shields.io/badge/单文件-离线可用-c9a64a?labelColor=16161a" alt="单文件">
+  <img src="https://img.shields.io/badge/零依赖-纯_HTML/JS-6aa86a?labelColor=16161a" alt="零依赖">
+  <img src="https://img.shields.io/badge/存储-localStorage-5a8ec8?labelColor=16161a" alt="localStorage">
+  <img src="https://img.shields.io/badge/风格-黑金编年史-9d72d6?labelColor=16161a" alt="黑金编年史">
+  <img src="https://img.shields.io/github/last-commit/myskme/myskme-scoreboard?color=c9a64a&labelColor=16161a&label=最近更新" alt="last commit">
+</p>
 
 一个**单文件**的课堂记分管理系统：记录、比较、排名、最佳小组，按赛季更新重置，可一键发布到网上，离线也能用。黑金编年史视觉风格，手机/平板/大屏（投影）通吃。
 
-![打开 index.html 即用](https://img.shields.io/badge/单文件-离线可用-c9a64a) ![零依赖](https://img.shields.io/badge/零外部请求-纯HTML-6aa86a)
+> **▶ 立即试用：** <https://myskme.github.io/myskme-scoreboard/>
 
 ---
 
@@ -18,7 +34,7 @@
 | **小组战** | 给学生分配小组，**最佳小组按「人均」评定**（各组人数不等时更公平），可切总分榜。 |
 | **数据统计** | 班级均分趋势（折线，可切单个学生 vs 班级基准）、各次课均分（柱状）、累计分布、小组对比，以及**异常分值清单**（自动揪出像「课堂=8」这样的笔误）。 |
 | **赛季管理** | 新建 / 切换 / 归档 / 复制开新季 / 重置（保留花名册或全清）/ 删除。跨赛季比较同一学生的成长。 |
-| **数据·部署** | JSON 全量备份与还原（无损）、CSV 导出（给 Excel）、单人荣誉卡 & 前三名海报（下载 PNG）、打印、GitHub 部署说明。 |
+| **数据·部署** | JSON 全量备份与还原（无损）、CSV 导出（给 Excel）、**MYSKME 画风荣誉卡 & 前三名海报**（狼先生纹徽 + 本相剪影 + 卡牌稀有度 UR/SSR/SR/R，可下载 PNG）、打印、GitHub 部署说明。 |
 
 所有「累计 / 名次 / 最佳小组」都是**实时算出来的**，不存冗余，改任何分数立即正确。
 
@@ -56,7 +72,7 @@
 ```bash
 cd myskme-scoreboard
 git init
-git add index.html README.md
+git add -A
 git commit -m "MYSKME 课堂记分编年史"
 git branch -M main
 git remote add origin git@github.com:myskme/scoreboard.git   # 换成你的仓库
@@ -79,6 +95,7 @@ git push -u origin main
 ```
 myskme-scoreboard/
 ├── index.html       ← 整个系统，单文件，直接打开/部署
+├── assets/cover.svg ← README 封面图（黑金狼先生纹徽）
 ├── seed-june.json   ← 6 月份原始数据（参考，已内置进 index.html）
 └── README.md
 ```

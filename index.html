@@ -370,6 +370,36 @@ const GROUP_COLORS = ["--red","--blue","--green","--purple","--gold","--ink2"];
 const CSSHEX = {"--red":"#a83030","--red2":"#d56060","--blue":"#5a8ec8","--green":"#6aa86a","--purple":"#9d72d6","--gold":"#c9a64a","--gold2":"#e8c768","--ink2":"#a8a090","--ink3":"#6a6458"};
 const chex = v => CSSHEX[v] || "#c9a64a";
 
+/* ---------- MYSKME 狼先生纹徽（程序化 SVG，离线） ---------- */
+const WOLF = {
+  ears: "M27 33 L15 5 L44 29 Z M73 33 L85 5 L56 29 Z",
+  face: "M33 29 L50 24 L67 29 L75 45 L62 64 L50 75 L38 64 L25 45 Z",
+  eyes: "M35 42 L45 39 L44 46 Z M65 42 L55 39 L56 46 Z",
+  nose: "M50 56 L45 61 L50 67 L55 61 Z"
+};
+// 狼头剪影（用作本相垫底，低透明度）
+function wolfSil(cx,cy,size,fill,op){
+  const s=size/100;
+  return `<g transform="translate(${cx-size/2} ${cy-size/2}) scale(${s})" fill="${fill}" fill-opacity="${op}"><path d="${WOLF.ears}"/><path d="${WOLF.face}"/></g>`;
+}
+// 狼头徽记（含五官，作品牌印记）
+function wolfCrest(cx,cy,size,fill,bg){
+  const s=size/100;
+  return `<g transform="translate(${cx-size/2} ${cy-size/2}) scale(${s})">
+    <path d="${WOLF.ears}" fill="${fill}"/><path d="${WOLF.face}" fill="${fill}"/>
+    <path d="${WOLF.eyes}" fill="${bg}"/><path d="${WOLF.nose}" fill="${bg}"/>
+    <path d="M50 56 L50 48" stroke="${bg}" stroke-width="1.6" fill="none"/>
+    <path d="M40 50 L46 53 M60 50 L54 53" stroke="${bg}" stroke-width="1.2" fill="none" opacity=".7"/>
+  </g>`;
+}
+// 卡牌稀有度：名次→UR/SSR/SR/R（MYSKME 抽卡式炫耀感）
+function rarityTier(rank,n){
+  if(rank===1) return {k:"UR",col:"#ffffff",glow:"#e8c768"};
+  if(rank<=3) return {k:"SSR",col:"#e8c768",glow:"#c9a64a"};
+  if(rank<=Math.max(3,Math.ceil(n/3))) return {k:"SR",col:"#b79cf0",glow:"#9d72d6"};
+  return {k:"R",col:"#8fb6e6",glow:"#5a8ec8"};
+}
+
 /* ---------- 六月赛季种子数据（来自老师现用 Excel，忠实录入） ---------- */
 const SEED_JUNE = [
  {name:"李思瑾",s:[[1,1],[3,1],[0,0],[2,0],[2,2]]},
@@ -1513,44 +1543,60 @@ function cardSVG(ss,r,total){
   const g=groupById(ss,r.st.groupId);
   const t=stuTotals(ss,r.st);
   const st=stars(ss);
+  const n=activeStudents(ss).length;
+  const tier=rarityTier(r.rank,n);
   let badges=[];
   if(st.cls&&st.cls.st.id===r.st.id) badges.push("课堂之星");
   if(st.comp&&st.comp.st.id===r.st.id) badges.push("作文之星");
   if(st.improved&&st.improved.st.id===r.st.id) badges.push("最佳进步");
   const bg=bestGroup(ss); if(bg&&g&&bg.g.id===g.id) badges.push("最佳小组");
-  const rankTxt=r.rank===1?"冠军 · CHAMPION":r.rank<=3?"前三甲":"第 "+r.rank+" 名";
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="420" height="560" viewBox="0 0 420 560" font-family="'Songti SC',serif">
+  const rankTxt=r.rank===1?"冠军 · CHAMPION":r.rank<=3?"前三甲 · TOP 3":"第 "+r.rank+" 名";
+  const gc=g?chex(g.color):"#c9a64a";
+  const W=440,H=600;
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="${W}" height="${H}" viewBox="0 0 ${W} ${H}" font-family="'Songti SC','STSong',serif">
     <defs>
       <linearGradient id="cg" x1="0" y1="0" x2="0" y2="1"><stop offset="0" stop-color="#0a0a0c"/><stop offset="1" stop-color="#16161a"/></linearGradient>
       <linearGradient id="gold" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#e8c768"/><stop offset=".5" stop-color="#fff"/><stop offset="1" stop-color="#c9a64a"/></linearGradient>
-      <radialGradient id="halo" cx="50%" cy="40%" r="50%"><stop offset="0" stop-color="#c9a64a" stop-opacity=".35"/><stop offset="1" stop-color="#c9a64a" stop-opacity="0"/></radialGradient>
+      <radialGradient id="halo" cx="50%" cy="38%" r="52%"><stop offset="0" stop-color="${tier.glow}" stop-opacity=".34"/><stop offset="1" stop-color="${tier.glow}" stop-opacity="0"/></radialGradient>
       <filter id="cglow"><feGaussianBlur stdDeviation="3" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+      <filter id="tglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
     </defs>
-    <rect width="420" height="560" fill="url(#cg)"/>
-    <rect width="420" height="560" fill="url(#halo)"/>
-    <rect x="14" y="14" width="392" height="532" fill="none" stroke="#c9a64a" stroke-opacity=".5"/>
-    <rect x="20" y="20" width="380" height="520" fill="none" stroke="#c9a64a" stroke-opacity=".2"/>
-    ${["0,0","1,0","0,1","1,1"].map(c=>{const[a,b]=c.split(",").map(Number);const x=a?392:28,y=b?524:28,sx=a?-1:1,sy=b?-1:1;return `<g transform="translate(${x} ${y}) scale(${sx} ${sy})"><path d="M0 0 h22 M0 0 v22" stroke="#e8c768" stroke-width="1.5" fill="none"/></g>`;}).join("")}
-    <text x="210" y="58" text-anchor="middle" fill="#a8a090" font-size="12" letter-spacing="3">MYSKME · 王老师的英语课</text>
-    <text x="210" y="80" text-anchor="middle" fill="#6a6458" font-size="11" letter-spacing="2">${esc(ss.name)} · ${esc(ss.startDate||"")}</text>
-    <circle cx="210" cy="158" r="52" fill="#1c1c22" stroke="#c9a64a" filter="url(#cglow)"/>
-    <circle cx="210" cy="158" r="60" fill="none" stroke="#c9a64a" stroke-opacity=".35"/>
-    ${g?`<circle cx="210" cy="158" r="66" fill="none" stroke="${chex(g.color)}" stroke-width="2" stroke-opacity=".6"/>`:""}
-    <text x="210" y="172" text-anchor="middle" fill="url(#gold)" font-size="44">${esc(r.st.name.slice(0,1))}</text>
-    <text x="210" y="250" text-anchor="middle" fill="#f0e6d2" font-size="30" letter-spacing="6">${esc(r.st.name)}</text>
-    <text x="210" y="278" text-anchor="middle" fill="#e8c768" font-size="14" letter-spacing="3">${rankTxt}</text>
-    <line x1="80" y1="300" x2="340" y2="300" stroke="#c9a64a" stroke-opacity=".25"/>
-    <g text-anchor="middle">
-      <text x="110" y="345" fill="#6a6458" font-size="12">课堂</text><text x="110" y="378" fill="#e8c768" font-size="30">${t.cls}</text>
-      <text x="210" y="345" fill="#6a6458" font-size="12">作文</text><text x="210" y="378" fill="#e8c768" font-size="30">${t.comp}</text>
-      <text x="310" y="345" fill="#6a6458" font-size="12">累计</text><text x="310" y="378" fill="url(#gold)" font-size="38" filter="url(#cglow)">${t.total}</text>
+    <rect width="${W}" height="${H}" fill="url(#cg)"/>
+    <rect width="${W}" height="${H}" fill="url(#halo)"/>
+    <rect x="14" y="14" width="${W-28}" height="${H-28}" fill="none" stroke="#c9a64a" stroke-opacity=".5"/>
+    <rect x="20" y="20" width="${W-40}" height="${H-40}" fill="none" stroke="#c9a64a" stroke-opacity=".2"/>
+    ${["0,0","1,0","0,1","1,1"].map(c=>{const[a,b]=c.split(",").map(Number);const x=a?W-28:28,y=b?H-28:28,sx=a?-1:1,sy=b?-1:1;return `<g transform="translate(${x} ${y}) scale(${sx} ${sy})"><path d="M0 0 h24 M0 0 v24" stroke="#e8c768" stroke-width="1.5" fill="none"/></g>`;}).join("")}
+    <!-- 顶部狼先生纹徽 -->
+    <g transform="translate(0 6)">
+      ${wolfCrest(220,52,44,"url(#gold)","#0a0a0c")}
+      <path d="M150 52 H188 M252 52 H290" stroke="#c9a64a" stroke-opacity=".5" stroke-width="1"/>
+      <path d="M150 52 l6 -4 M150 52 l6 4 M290 52 l-6 -4 M290 52 l-6 4" stroke="#c9a64a" stroke-opacity=".5" stroke-width="1" fill="none"/>
     </g>
-    ${badges.length?`<text x="210" y="424" text-anchor="middle" fill="#9d72d6" font-size="13" letter-spacing="2">★ ${badges.join("　")} ★</text>`:""}
-    <text x="210" y="478" text-anchor="middle" fill="#a8a090" font-size="13" font-style="italic">Make Yourself Special &amp; Kind</text>
-    <text x="210" y="500" text-anchor="middle" fill="#6a6458" font-size="11" letter-spacing="4">做 独 特 而 善 良 的 自 己</text>
-    <rect x="330" y="508" width="58" height="26" fill="none" stroke="#a83030" stroke-width="1.5"/>
-    <text x="359" y="526" text-anchor="middle" fill="#d56060" font-size="15" font-family="serif">王 印</text>
-    <text x="32" y="526" fill="#6a6458" font-size="11">Mr.Wang · ${esc(ss.recorder||'')}</text>
+    <text x="220" y="106" text-anchor="middle" fill="#e8c768" font-size="15" letter-spacing="6">M Y S K M E</text>
+    <text x="220" y="126" text-anchor="middle" fill="#a8a090" font-size="11" letter-spacing="3">王老师的英语课 · ${esc(ss.name)} · ${esc(ss.startDate||"")}</text>
+    <!-- 稀有度宝石 -->
+    <g transform="translate(388 44)"><path d="M0 -13 L11 0 L0 13 L-11 0 Z" fill="#0a0a0c" stroke="${tier.glow}" stroke-width="1.5" filter="url(#tglow)"/>
+      <text y="4" text-anchor="middle" fill="${tier.col}" font-size="11" font-family="serif" letter-spacing="1">${tier.k}</text></g>
+    <!-- 名字徽章：本相垫底 + 稀有度光环 -->
+    ${wolfSil(220,196,150,tier.glow,.10)}
+    <circle cx="220" cy="196" r="54" fill="#1c1c22" stroke="${tier.glow}" filter="url(#tglow)"/>
+    <circle cx="220" cy="196" r="62" fill="none" stroke="#c9a64a" stroke-opacity=".35"/>
+    <circle cx="220" cy="196" r="68" fill="none" stroke="${gc}" stroke-width="2" stroke-opacity=".6"/>
+    <text x="220" y="212" text-anchor="middle" fill="url(#gold)" font-size="46" filter="url(#cglow)">${esc(r.st.name.slice(0,1))}</text>
+    <text x="220" y="290" text-anchor="middle" fill="#f0e6d2" font-size="30" letter-spacing="6">${esc(r.st.name)}</text>
+    <text x="220" y="318" text-anchor="middle" fill="${tier.col}" font-size="14" letter-spacing="3">${rankTxt}</text>
+    <line x1="90" y1="340" x2="350" y2="340" stroke="#c9a64a" stroke-opacity=".25"/>
+    <g text-anchor="middle">
+      <text x="115" y="385" fill="#6a6458" font-size="12">课堂</text><text x="115" y="418" fill="#e8c768" font-size="30">${t.cls}</text>
+      <text x="220" y="385" fill="#6a6458" font-size="12">作文</text><text x="220" y="418" fill="#e8c768" font-size="30">${t.comp}</text>
+      <text x="325" y="385" fill="#6a6458" font-size="12">累计</text><text x="325" y="420" fill="url(#gold)" font-size="40" filter="url(#cglow)">${t.total}</text>
+    </g>
+    ${badges.length?`<text x="220" y="466" text-anchor="middle" fill="${gc}" font-size="13" letter-spacing="2">✦ ${badges.join("　")} ✦</text>`:""}
+    <text x="220" y="516" text-anchor="middle" fill="#a8a090" font-size="13" font-style="italic">Make Yourself Special &amp; Kind</text>
+    <text x="220" y="538" text-anchor="middle" fill="#6a6458" font-size="11" letter-spacing="4">做 独 特 而 善 良 的 自 己</text>
+    <rect x="350" y="548" width="58" height="26" fill="none" stroke="#a83030" stroke-width="1.5"/>
+    <text x="379" y="566" text-anchor="middle" fill="#d56060" font-size="15" font-family="serif">王 印</text>
+    <text x="32" y="566" fill="#6a6458" font-size="11">Mr.Wang · ${esc(ss.recorder||'')}</text>
   </svg>`;
 }
 function showCard(stuId){
@@ -1565,29 +1611,35 @@ function showCard(stuId){
 function posterSVG(ss){
   const arr=rankList(ss).slice(0,3);
   const cols=[arr[1],arr[0],arr[2]];
+  const N=activeStudents(ss).length;
   const x=[120,360,600], scale=[.82,1,.82], yb=[330,300,350];
   let figs="";
   cols.forEach((r,i)=>{ if(!r) return; const g=groupById(ss,r.st.groupId); const s=scale[i]; const cy=yb[i];
+    const tier=rarityTier(r.rank,N);
     figs+=`<g transform="translate(${x[i]} ${cy})">
-      <circle r="${44*s}" fill="#1c1c22" stroke="#c9a64a" ${i===1?'filter="url(#pglow)"':''}/>
+      ${wolfSil(0,0,118*s,tier.glow,.12)}
+      <circle r="${44*s}" fill="#1c1c22" stroke="${tier.glow}" ${i===1?'filter="url(#pglow)"':''}/>
       <circle r="${50*s}" fill="none" stroke="#c9a64a" stroke-opacity=".3"/>
       ${g?`<circle r="${55*s}" fill="none" stroke="${chex(g.color)}" stroke-width="2" stroke-opacity=".6"/>`:""}
       <text y="${14*s}" text-anchor="middle" fill="#e8c768" font-size="${38*s}">${esc(r.st.name.slice(0,1))}</text>
       <text y="${85*s}" text-anchor="middle" fill="#f0e6d2" font-size="20">${esc(r.st.name)}</text>
-      <text y="${110*s}" text-anchor="middle" fill="#e8c768" font-size="16">${r.total} 分</text>
-      <text y="${-58*s}" text-anchor="middle" fill="#c9a64a" font-size="22">${["","Ⅰ","Ⅱ","Ⅲ"][r.rank]||""}</text>
+      <text y="${110*s}" text-anchor="middle" fill="${tier.col}" font-size="16">${r.total} 分 · ${tier.k}</text>
+      <text y="${-58*s}" text-anchor="middle" fill="#c9a64a" font-size="22">${["","Ⅰ","Ⅱ","Ⅲ"][r.rank]||r.rank}</text>
     </g>`;
   });
-  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="460" viewBox="0 0 720 460" font-family="'Songti SC',serif">
+  return `<svg xmlns="http://www.w3.org/2000/svg" width="720" height="480" viewBox="0 0 720 480" font-family="'Songti SC','STSong',serif">
     <defs><filter id="pglow"><feGaussianBlur stdDeviation="4" result="b"/><feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
-    <radialGradient id="pg" cx="50%" cy="0%" r="80%"><stop offset="0" stop-color="#c9a64a" stop-opacity=".18"/><stop offset="1" stop-color="#c9a64a" stop-opacity="0"/></radialGradient></defs>
-    <rect width="720" height="460" fill="#0a0a0c"/><rect width="720" height="460" fill="url(#pg)"/>
-    <rect x="14" y="14" width="692" height="432" fill="none" stroke="#c9a64a" stroke-opacity=".5"/>
-    <text x="360" y="58" text-anchor="middle" fill="url(#gold)" font-size="26" letter-spacing="6">MYSKME · ${esc(ss.name)}荣誉榜</text>
-    <text x="360" y="84" text-anchor="middle" fill="#a8a090" font-size="12" letter-spacing="3">开课 ${esc(ss.startDate||"")} · 记录人 ${esc(ss.recorder||"Mr.Wang")}</text>
-    <defs><linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c9a64a"/><stop offset=".5" stop-color="#e8c768"/><stop offset="1" stop-color="#c9a64a"/></linearGradient></defs>
+    <radialGradient id="pg" cx="50%" cy="0%" r="80%"><stop offset="0" stop-color="#c9a64a" stop-opacity=".18"/><stop offset="1" stop-color="#c9a64a" stop-opacity="0"/></radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="1" y2="0"><stop offset="0" stop-color="#c9a64a"/><stop offset=".5" stop-color="#e8c768"/><stop offset="1" stop-color="#c9a64a"/></linearGradient></defs>
+    <rect width="720" height="480" fill="#0a0a0c"/><rect width="720" height="480" fill="url(#pg)"/>
+    <rect x="14" y="14" width="692" height="452" fill="none" stroke="#c9a64a" stroke-opacity=".5"/>
+    ${["0,0","1,0","0,1","1,1"].map(c=>{const[a,b]=c.split(",").map(Number);const px=a?692:28,py=b?452:28,sx=a?-1:1,sy=b?-1:1;return `<g transform="translate(${px} ${py}) scale(${sx} ${sy})"><path d="M0 0 h22 M0 0 v22" stroke="#e8c768" stroke-width="1.5" fill="none"/></g>`;}).join("")}
+    ${wolfCrest(360,42,36,"url(#gold)","#0a0a0c")}
+    <path d="M252 42 H300 M420 42 H468" stroke="#c9a64a" stroke-opacity=".5"/>
+    <text x="360" y="90" text-anchor="middle" fill="url(#gold)" font-size="25" letter-spacing="6">MYSKME · ${esc(ss.name)}荣誉榜</text>
+    <text x="360" y="112" text-anchor="middle" fill="#a8a090" font-size="12" letter-spacing="3">开课 ${esc(ss.startDate||"")} · 记录人 ${esc(ss.recorder||"Mr.Wang")}</text>
     ${figs}
-    <text x="360" y="438" text-anchor="middle" fill="#6a6458" font-size="12" letter-spacing="4">做独特而善良的自己 · Make Yourself Special &amp; Kind</text>
+    <text x="360" y="456" text-anchor="middle" fill="#6a6458" font-size="12" letter-spacing="4">做独特而善良的自己 · Make Yourself Special &amp; Kind</text>
   </svg>`;
 }
 function showPoster(){
