@@ -1,0 +1,577 @@
+[
+ {
+  "name": "李思瑾",
+  "scores": [
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 0,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "刘晨晰",
+  "scores": [
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "王启旭",
+  "scores": [
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "姚逸琳",
+  "scores": [
+   {
+    "cls": 3,
+    "comp": 0
+   },
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "王涵",
+  "scores": [
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "宫睿",
+  "scores": [
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "时海诺",
+  "scores": [
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 0
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "王浩轩",
+  "scores": [
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 0,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "吴嘉麒",
+  "scores": [
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 0
+   }
+  ]
+ },
+ {
+  "name": "衣璇",
+  "scores": [
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 0
+   }
+  ]
+ },
+ {
+  "name": "尹一航",
+  "scores": [
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 3,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "郭金慧",
+  "scores": [
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "音",
+  "scores": [
+   {
+    "cls": 0,
+    "comp": 0
+   },
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "李昕诺",
+  "scores": [
+   {
+    "cls": 0,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 0
+   },
+   {
+    "cls": 8,
+    "comp": 2
+   },
+   {
+    "cls": 2,
+    "comp": 2
+   },
+   {
+    "cls": 0,
+    "comp": 0
+   }
+  ]
+ },
+ {
+  "name": "叶王",
+  "scores": [
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "洋",
+  "scores": [
+   {
+    "cls": 1,
+    "comp": 1
+   },
+   {
+    "cls": 3,
+    "comp": 1
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "荣",
+  "scores": [
+   {
+    "cls": 0,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 0
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "炜",
+  "scores": [
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": 0
+   },
+   {
+    "cls": 2,
+    "comp": 1
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "月",
+  "scores": [
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "铎",
+  "scores": [
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ },
+ {
+  "name": "晓",
+  "scores": [
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": 0
+   }
+  ]
+ },
+ {
+  "name": "文",
+  "scores": [
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": 0
+   }
+  ]
+ },
+ {
+  "name": "马铭璐",
+  "scores": [
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": null,
+    "comp": null
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   },
+   {
+    "cls": 1,
+    "comp": 2
+   }
+  ]
+ }
+]
