@@ -1,0 +1,777 @@
+{
+ "schemaVersion": 1,
+ "app": "myskme-scoreboard",
+ "currentSeasonId": "ssn_june",
+ "settings": {
+  "recorder": "Mr.Wang",
+  "maxCls": 3,
+  "maxComp": 2,
+  "minGroupMembers": 2,
+  "fx": true
+ },
+ "seasons": [
+  {
+   "id": "ssn_june",
+   "name": "6 月份",
+   "recorder": "Mr.Wang",
+   "startDate": "2026-06-01",
+   "createdAt": "2026-06-01T08:00:00.000Z",
+   "updatedAt": "2026-06-20T12:00:00.000Z",
+   "status": "active",
+   "archivedAt": null,
+   "groups": [
+    {
+     "id": "grp_1",
+     "name": "火队",
+     "color": "--red"
+    },
+    {
+     "id": "grp_2",
+     "name": "水队",
+     "color": "--blue"
+    },
+    {
+     "id": "grp_3",
+     "name": "林队",
+     "color": "--green"
+    },
+    {
+     "id": "grp_4",
+     "name": "雷队",
+     "color": "--purple"
+    }
+   ],
+   "students": [
+    {
+     "id": "stu_1",
+     "name": "李思瑾",
+     "groupId": "grp_1",
+     "active": true,
+     "order": 1,
+     "note": ""
+    },
+    {
+     "id": "stu_2",
+     "name": "刘晨晰",
+     "groupId": "grp_2",
+     "active": true,
+     "order": 2,
+     "note": ""
+    },
+    {
+     "id": "stu_3",
+     "name": "王启旭",
+     "groupId": "grp_3",
+     "active": true,
+     "order": 3,
+     "note": ""
+    },
+    {
+     "id": "stu_4",
+     "name": "姚逸琳",
+     "groupId": "grp_4",
+     "active": true,
+     "order": 4,
+     "note": ""
+    },
+    {
+     "id": "stu_5",
+     "name": "王涵",
+     "groupId": "grp_1",
+     "active": true,
+     "order": 5,
+     "note": ""
+    },
+    {
+     "id": "stu_6",
+     "name": "宫睿",
+     "groupId": "grp_2",
+     "active": true,
+     "order": 6,
+     "note": ""
+    },
+    {
+     "id": "stu_7",
+     "name": "时海诺",
+     "groupId": "grp_3",
+     "active": true,
+     "order": 7,
+     "note": ""
+    },
+    {
+     "id": "stu_8",
+     "name": "王浩轩",
+     "groupId": "grp_4",
+     "active": true,
+     "order": 8,
+     "note": ""
+    },
+    {
+     "id": "stu_9",
+     "name": "吴嘉麒",
+     "groupId": "grp_1",
+     "active": true,
+     "order": 9,
+     "note": ""
+    },
+    {
+     "id": "stu_10",
+     "name": "衣璇",
+     "groupId": "grp_2",
+     "active": true,
+     "order": 10,
+     "note": ""
+    },
+    {
+     "id": "stu_11",
+     "name": "尹一航",
+     "groupId": "grp_3",
+     "active": true,
+     "order": 11,
+     "note": ""
+    },
+    {
+     "id": "stu_12",
+     "name": "郭金慧",
+     "groupId": "grp_4",
+     "active": true,
+     "order": 12,
+     "note": ""
+    },
+    {
+     "id": "stu_13",
+     "name": "音",
+     "groupId": "grp_1",
+     "active": true,
+     "order": 13,
+     "note": ""
+    },
+    {
+     "id": "stu_14",
+     "name": "李昕诺",
+     "groupId": "grp_2",
+     "active": true,
+     "order": 14,
+     "note": ""
+    },
+    {
+     "id": "stu_15",
+     "name": "叶王",
+     "groupId": "grp_3",
+     "active": true,
+     "order": 15,
+     "note": ""
+    },
+    {
+     "id": "stu_16",
+     "name": "洋",
+     "groupId": "grp_4",
+     "active": true,
+     "order": 16,
+     "note": ""
+    },
+    {
+     "id": "stu_17",
+     "name": "荣",
+     "groupId": "grp_1",
+     "active": true,
+     "order": 17,
+     "note": ""
+    },
+    {
+     "id": "stu_18",
+     "name": "炜",
+     "groupId": "grp_2",
+     "active": true,
+     "order": 18,
+     "note": ""
+    },
+    {
+     "id": "stu_19",
+     "name": "月",
+     "groupId": "grp_3",
+     "active": true,
+     "order": 19,
+     "note": ""
+    },
+    {
+     "id": "stu_20",
+     "name": "铎",
+     "groupId": "grp_4",
+     "active": true,
+     "order": 20,
+     "note": ""
+    },
+    {
+     "id": "stu_21",
+     "name": "晓",
+     "groupId": "grp_1",
+     "active": true,
+     "order": 21,
+     "note": ""
+    },
+    {
+     "id": "stu_22",
+     "name": "文",
+     "groupId": "grp_2",
+     "active": true,
+     "order": 22,
+     "note": ""
+    },
+    {
+     "id": "stu_23",
+     "name": "马铭璐",
+     "groupId": "grp_3",
+     "active": true,
+     "order": 23,
+     "note": ""
+    }
+   ],
+   "sessions": [
+    {
+     "id": "les_1",
+     "index": 1,
+     "date": "2026-06-03",
+     "note": "",
+     "winningGroupIds": []
+    },
+    {
+     "id": "les_2",
+     "index": 2,
+     "date": "2026-06-06",
+     "note": "",
+     "winningGroupIds": []
+    },
+    {
+     "id": "les_3",
+     "index": 3,
+     "date": "2026-06-10",
+     "note": "",
+     "winningGroupIds": []
+    },
+    {
+     "id": "les_4",
+     "index": 4,
+     "date": "2026-06-13",
+     "note": "",
+     "winningGroupIds": []
+    },
+    {
+     "id": "les_5",
+     "index": 5,
+     "date": "2026-06-17",
+     "note": "",
+     "winningGroupIds": []
+    }
+   ],
+   "scores": {
+    "stu_1": {
+     "les_1": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 0,
+      "comp": 0
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 0
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_2": {
+     "les_1": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_3": {
+     "les_1": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_4": {
+     "les_1": {
+      "cls": 3,
+      "comp": 0
+     },
+     "les_2": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_5": {
+     "les_1": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_6": {
+     "les_1": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_7": {
+     "les_1": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 0
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_8": {
+     "les_1": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 0,
+      "comp": 2
+     }
+    },
+    "stu_9": {
+     "les_1": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 1,
+      "comp": 0
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 0
+     }
+    },
+    "stu_10": {
+     "les_1": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 0
+     }
+    },
+    "stu_11": {
+     "les_1": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 3,
+      "comp": 0
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_12": {
+     "les_1": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_13": {
+     "les_1": {
+      "cls": 0,
+      "comp": 0
+     },
+     "les_2": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 2,
+      "comp": 2
+     }
+    },
+    "stu_14": {
+     "les_1": {
+      "cls": 0,
+      "comp": 0
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 0
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 2,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 0,
+      "comp": 0
+     }
+    },
+    "stu_15": {
+     "les_1": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_16": {
+     "les_1": {
+      "cls": 1,
+      "comp": 1
+     },
+     "les_2": {
+      "cls": 3,
+      "comp": 1
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_17": {
+     "les_1": {
+      "cls": 0,
+      "comp": 0
+     },
+     "les_2": {
+      "cls": 2,
+      "comp": 0
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 0
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_18": {
+     "les_1": {
+      "cls": null,
+      "comp": null
+     },
+     "les_2": {
+      "cls": 1,
+      "comp": 0
+     },
+     "les_3": {
+      "cls": 2,
+      "comp": 1
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_19": {
+     "les_1": {
+      "cls": null,
+      "comp": null
+     },
+     "les_2": {
+      "cls": null,
+      "comp": null
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_20": {
+     "les_1": {
+      "cls": null,
+      "comp": null
+     },
+     "les_2": {
+      "cls": null,
+      "comp": null
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    },
+    "stu_21": {
+     "les_1": {
+      "cls": null,
+      "comp": null
+     },
+     "les_2": {
+      "cls": null,
+      "comp": null
+     },
+     "les_3": {
+      "cls": null,
+      "comp": null
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": null
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 0
+     }
+    },
+    "stu_22": {
+     "les_1": {
+      "cls": null,
+      "comp": null
+     },
+     "les_2": {
+      "cls": null,
+      "comp": null
+     },
+     "les_3": {
+      "cls": null,
+      "comp": null
+     },
+     "les_4": {
+      "cls": null,
+      "comp": null
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 0
+     }
+    },
+    "stu_23": {
+     "les_1": {
+      "cls": null,
+      "comp": null
+     },
+     "les_2": {
+      "cls": null,
+      "comp": null
+     },
+     "les_3": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_4": {
+      "cls": 1,
+      "comp": 2
+     },
+     "les_5": {
+      "cls": 1,
+      "comp": 2
+     }
+    }
+   }
+  }
+ ]
+}

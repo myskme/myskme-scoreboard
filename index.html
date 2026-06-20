@@ -61,6 +61,8 @@ h1.brand em{font-style:normal;-webkit-text-fill-color:var(--gold2);letter-spacin
 .stamp.lead{color:var(--gold2);box-shadow:var(--glow-soft)}
 .stamp svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.4;flex:none}
 .stamp b{color:var(--ink);font-weight:500}
+.dirty-dot{width:7px;height:7px;border-radius:50%;background:var(--gold2);box-shadow:0 0 6px var(--gold2);animation:dirtyPulse 1.4s ease-in-out infinite;flex:none}
+@keyframes dirtyPulse{50%{opacity:.3}}
 
 /* ============== 页签导航 ============== */
 nav.tabs{position:sticky;top:0;z-index:30;display:flex;gap:2px;justify-content:center;flex-wrap:wrap;
@@ -377,16 +379,29 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
 
 const LS_KEY = "myskme_scoreboard_v1";
 const SCHEMA = 1;
-/* ===== 管理员编辑锁 =====
-   默认所有人只能浏览；输入密码才能编辑。密码以哈希存储(明文不入源码)。
-   改密码：浏览器控制台运行 hashPass('你的新密码')，把结果填到下面 ADMIN_HASH。 */
-const ADMIN_HASH = "ce809572";              // = hashPass("mrwolf")
+/* ===== 管理员编辑锁（前端软锁，只防误触）=====
+   默认所有人只能浏览；输入此密码解锁本机的编辑 UI。它是公开网页里的软锁，能挡住普通人，
+   但懂技术者可绕过——所以它【不是】真正的写入凭证。真正决定能否把数据写到网上的，是
+   Worker 里独立设置、更强的 ADMIN_PASSWORD（发布密码），两者必须不同。
+   改此软锁密码：控制台运行 hashPass('新密码')，把结果填到下面 ADMIN_HASH。 */
+const ADMIN_HASH = "ce809572";              // = hashPass("mrwolf")（仅前端软锁，非发布密码）
 const ADMIN_KEY  = "myskme_admin";
 let ADMIN = false;
 function hashPass(s){ let h=0x811c9dc5; s=String(s); for(let i=0;i<s.length;i++){ h^=s.charCodeAt(i); h=Math.imul(h,0x01000193)>>>0; } return ("0000000"+h.toString(16)).slice(-8); }
 function isAdmin(){ return ADMIN; }
 function roMsg(){ return ADMIN ? "归档赛季 · 只读" : "浏览模式：点右上角『解锁编辑』"; }
 function needAdmin(){ if(!ADMIN){ toast("浏览模式：点右上角『解锁编辑』"); return true; } return false; }
+/* ===== 在线发布（Cloudflare Worker 代理 → 仓库 data.json，所有人可见） ===== */
+const PUBLISH_URL_DEFAULT = "";              // 部署 Worker 后把它的网址填这里(或在应用内粘贴)
+const PUBLISH_KEY = "myskme_publish_url";    // 本地保存的 Worker 网址
+const DIRTY_KEY   = "myskme_dirty";          // 是否有未发布的本地修改
+const DATA_URL    = "data.json";             // 仓库里的共享数据(GitHub Pages 同源)
+let UNPUBLISHED = false;                      // 当前是否有未发布修改
+let ADMIN_PW = "";                            // 解锁时记住的明文密码(仅存内存,用于发布鉴权)
+function publishUrl(){ try{ return (localStorage.getItem(PUBLISH_KEY)||"").trim() || PUBLISH_URL_DEFAULT; }catch(e){ return PUBLISH_URL_DEFAULT; } }
+function isDirty(){ try{ return localStorage.getItem(DIRTY_KEY)==="1"; }catch(e){ return false; } }
+function markDirty(){ UNPUBLISHED=true; try{ localStorage.setItem(DIRTY_KEY,"1"); }catch(e){} }
+function clearDirty(){ UNPUBLISHED=false; try{ localStorage.removeItem(DIRTY_KEY); }catch(e){} }
 const GROUP_COLORS = ["--red","--blue","--green","--purple","--gold","--ink2"];
 const CSSHEX = {"--red":"#a83030","--red2":"#d56060","--blue":"#5a8ec8","--green":"#6aa86a","--purple":"#9d72d6","--gold":"#c9a64a","--gold2":"#e8c768","--ink2":"#a8a090","--ink3":"#6a6458"};
 const chex = v => CSSHEX[v] || "#c9a64a";
@@ -436,7 +451,7 @@ const SEED_JUNE = [
  {name:"尹一航",s:[[3,1],[3,0],[2,2],[1,2],[2,2]]},
  {name:"郭金慧",s:[[2,1],[2,1],[2,2],[1,2],[2,2]]},
  {name:"音",    s:[[0,0],[3,1],[2,2],[1,2],[2,2]]},
- {name:"李昕诺",s:[[0,0],[2,0],[8,2],[2,2],[0,0]]},
+ {name:"李昕诺",s:[[0,0],[2,0],[2,2],[2,2],[0,0]]},
  {name:"叶王",  s:[[2,1],[2,1],[2,1],[1,2],[1,2]]},
  {name:"洋",    s:[[1,1],[3,1],[2,1],[1,2],[1,2]]},
  {name:"荣",    s:[[0,0],[2,0],[2,0],[1,2],[1,2]]},
@@ -512,7 +527,7 @@ function buildJuneSeason(){
 function freshDB(){
   const june = buildJuneSeason();
   return {
-    schemaVersion: SCHEMA, app:"myskme-scoreboard",
+    schemaVersion: SCHEMA, app:"myskme-scoreboard", publishedAt: null,
     currentSeasonId: june.id,
     settings:{ recorder:"Mr.Wang", maxCls:3, maxComp:2, minGroupMembers:2, fx:true },
     seasons:[ june ]
@@ -529,6 +544,7 @@ function normalize(d){
   if(!d || typeof d!=="object") return freshDB();
   if(!d.schemaVersion) d.schemaVersion=SCHEMA;
   d.app="myskme-scoreboard";
+  if(d.publishedAt===undefined) d.publishedAt=null;
   d.settings=Object.assign({recorder:"Mr.Wang",maxCls:3,maxComp:2,minGroupMembers:2,fx:true}, d.settings||{});
   if(!Array.isArray(d.seasons)) d.seasons=[];
   d.seasons.forEach(s=>{
@@ -549,18 +565,61 @@ function normalize(d){
   if(!d.currentSeasonId || !d.seasons.some(s=>s.id===d.currentSeasonId)) d.currentSeasonId=d.seasons[0].id;
   return d;
 }
-function load(){
-  try{
-    const raw = localStorage.getItem(LS_KEY);
-    if(!raw){ DB=freshDB(); save(); return; }
-    DB = normalize(migrate(JSON.parse(raw)));
-  }catch(e){ console.error(e); DB=freshDB(); save(); }
-}
+function persistLocal(){ try{ localStorage.setItem(LS_KEY, JSON.stringify(DB)); }catch(e){ toast("存储异常！请尽快导出 JSON 备份"); console.error(e); } }
 function save(touchS){
+  const s = touchS!==undefined ? touchS : curSeason(); if(s) s.updatedAt = nowISO();
+  persistLocal();
+  if(ADMIN) markDirty();          // 管理员的改动 = 待发布到网上
+}
+function localDB(){ try{ const raw=localStorage.getItem(LS_KEY); return raw? normalize(migrate(JSON.parse(raw))) : null; }catch(e){ return null; } }
+async function fetchOnline(){
   try{
-    const s = touchS!==undefined ? touchS : curSeason(); if(s) s.updatedAt = nowISO();
-    localStorage.setItem(LS_KEY, JSON.stringify(DB));
-  }catch(e){ toast("存储异常！请尽快导出 JSON 备份"); console.error(e); }
+    const r = await fetch(DATA_URL + "?t=" + Date.now(), {cache:"no-store"});
+    if(!r.ok) return null;
+    const j = await r.json();
+    if(!j || !Array.isArray(j.seasons)) return null;
+    return normalize(migrate(j));
+  }catch(e){ return null; }
+}
+// 同步兜底：先用本地秒开渲染
+function load(){
+  const local = localDB();
+  DB = local || freshDB();
+  if(!local) persistLocal();
+  UNPUBLISHED = isDirty();
+}
+// 异步：优先采用线上共享数据；仅"已解锁管理员 + 有未发布修改"才保留本地工作副本
+let PENDING_CONFLICT = null;
+async function loadData(){
+  const online = await fetchOnline();
+  const local = localDB();            // 在 await 之后再读，捕获加载窗口内的编辑(防竞态)
+  const dirty = isDirty();
+  PENDING_CONFLICT = null;
+  if(local && dirty && ADMIN){
+    DB = local; UNPUBLISHED = true;                                   // 管理员有未发布改动 → 继续编辑
+    if(online && online.publishedAt && local.publishedAt && online.publishedAt > local.publishedAt){
+      PENDING_CONFLICT = online;                                      // 线上在本机基线之后被更新过 → 冲突,待提示
+    }
+  } else if(online){
+    DB = online; UNPUBLISHED = false; persistLocal(); clearDirty();   // 浏览者/已锁定/无脏改 → 采用线上最新
+  } else if(local){
+    DB = local; UNPUBLISHED = !!(dirty && ADMIN);
+  } else {
+    DB = freshDB(); persistLocal();                                   // 离线且无数据 → 内置种子
+  }
+}
+function maybeConflict(){
+  if(!PENDING_CONFLICT) return;
+  openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h3>数据冲突</h3>
+    <div class="m-sub">网上的数据在你这台设备之后被更新过（可能是别的设备发布的），而你这台还有未发布的修改。请选择保留哪一份：</div>
+    <div class="m-foot"><button class="btn" onclick="resolveConflict('online')">采用线上最新（放弃本机修改）</button>
+    <button class="btn gold" onclick="resolveConflict('local')">保留我本机的修改</button></div>`);
+}
+function resolveConflict(which){
+  const online=PENDING_CONFLICT; PENDING_CONFLICT=null; closeModal();
+  if(which==='online' && online){ DB=online; persistLocal(); clearDirty(); UNPUBLISHED=false; render(); toast("已采用线上最新"); }
+  else { render(); toast("已保留本机修改（发布后将覆盖线上）"); }
 }
 function curSeason(){
   let s = DB.seasons.find(s=>s.id===DB.currentSeasonId);
@@ -704,7 +763,9 @@ const ICO = {
   user:'<svg viewBox="0 0 24 24"><circle cx="12" cy="8" r="3.8"/><path d="M4.5 20.5a7.5 7.5 0 0 1 15 0"/></svg>',
   lock:'<svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="1.6"/><path d="M8 10.5V7.5a4 4 0 0 1 8 0v3"/><path d="M12 14v2.5"/></svg>',
   unlock:'<svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="1.6"/><path d="M8 10.5V7.5a4 4 0 0 1 7.7-1.4"/><path d="M12 14v2.5"/></svg>',
-  edit:'<svg viewBox="0 0 24 24"><path d="M14.5 5.6l3.9 3.9M4 20l1-4 10.5-10.5a1.7 1.7 0 0 1 2.4 0l1.1 1.1a1.7 1.7 0 0 1 0 2.4L8.5 19z"/></svg>'
+  edit:'<svg viewBox="0 0 24 24"><path d="M14.5 5.6l3.9 3.9M4 20l1-4 10.5-10.5a1.7 1.7 0 0 1 2.4 0l1.1 1.1a1.7 1.7 0 0 1 0 2.4L8.5 19z"/></svg>',
+  cloudup:'<svg viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M12 20.5v-6.6M9.6 16l2.4-2.3 2.4 2.3"/></svg>',
+  cloudok:'<svg viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M9.5 13.6l1.8 1.8 3.2-3.4"/></svg>'
 };
 
 /* =========================================================
@@ -718,7 +779,10 @@ function renderStamps(){
     <span class="stamp">${ICO.clock}更新 · <b>${relTime(ss.updatedAt)}</b></span>
     <span class="stamp">${ICO.user}记录人 · <b>${esc(ss.recorder||"Mr.Wang")}</b></span>
     ${ss.status==="archived"?`<span class="stamp" style="color:var(--red2);border-color:var(--red)">已归档 · 只读</span>`:""}
-    <span class="stamp ${ADMIN?'lead':''}" style="cursor:pointer;${ADMIN?'':'border-color:var(--gold)'}" onclick="${ADMIN?'lockAdmin()':'unlockAdmin()'}" title="${ADMIN?'点此锁定为浏览模式':'输入密码解锁编辑'}">${ADMIN?ICO.edit+'管理员 · <b>点此锁定</b>':ICO.lock+'<b>浏览模式</b> · 解锁编辑'}</span>`;
+    <span class="stamp ${ADMIN?'lead':''}" style="cursor:pointer;${ADMIN?'':'border-color:var(--gold)'}" onclick="${ADMIN?'lockAdmin()':'unlockAdmin()'}" title="${ADMIN?'点此锁定为浏览模式':'输入密码解锁编辑'}">${ADMIN?ICO.edit+'管理员 · <b>点此锁定</b>':ICO.lock+'<b>浏览模式</b> · 解锁编辑'}</span>
+    ${ADMIN ? (UNPUBLISHED
+       ? `<span class="stamp" style="cursor:pointer;color:var(--gold2);border-color:var(--gold);box-shadow:var(--glow-soft)" onclick="publish()" title="把当前改动保存到网上，所有人可见"><span class="dirty-dot"></span>${ICO.cloudup}<b>发布到网上</b></span>`
+       : `<span class="stamp" style="cursor:pointer;color:var(--ink2)" onclick="openPublishSetup()" title="在线发布设置">${ICO.cloudok}已与网上同步</span>`) : ""}`;
 }
 
 /* =========================================================
@@ -1400,7 +1464,7 @@ function seasonCompare(){
   }).join("");
   return `<table class="board"><thead><tr><th>学生</th><th>各赛季累计</th></tr></thead><tbody>${rows}</tbody></table>`;
 }
-function switchSeason(id){ DB.currentSeasonId=id; save(); UI.lessonIdx=0; render(); toast("已切换赛季"); }
+function switchSeason(id){ DB.currentSeasonId=id; persistLocal(); UI.lessonIdx=0; render(); toast("已切换赛季"); }
 function newSeason(){
   if(needAdmin()) return;
   openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
@@ -1496,8 +1560,12 @@ function viewData(){
   const ss=curSeason();
   return `
   <div class="export-grid">
+    ${ADMIN?`<div class="exp-card" style="${UNPUBLISHED?'border-color:var(--gold);box-shadow:var(--glow-soft)':''}"><svg class="ec-ico" viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M12 20.5v-6.6M9.6 16l2.4-2.3 2.4 2.3"/></svg>
+      <h4>保存到网上 ${UNPUBLISHED?'<span style="color:var(--gold2);font-size:12px">· 有未保存改动</span>':''}</h4><p>把当前数据发布到网上，所有访客刷新即见最新。需先配置 Worker 网址。</p>
+      <button class="btn ${UNPUBLISHED?'gold':''}" onclick="publish()">发布到网上</button>
+      <button class="btn sm" style="margin-top:8px" onclick="openPublishSetup()">发布设置</button></div>`:""}
     <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><path d="M12 3v12M8 11l4 4 4-4M5 21h14"/></svg>
-      <h4>JSON 全量备份</h4><p>导出所有赛季的完整数据，可随时导入还原（无损）。这是<b>唯一可靠的备份</b>。</p>
+      <h4>JSON 全量备份</h4><p>导出所有赛季的完整数据，可随时导入还原（无损）。这是<b>本地备份</b>。</p>
       <button class="btn gold" onclick="exportJSON()">导出 JSON</button></div>
     <div class="exp-card"><svg class="ec-ico" viewBox="0 0 24 24"><path d="M12 21V9M8 13l4-4 4 4M5 3h14"/></svg>
       <h4>导入 / 还原</h4><p>选择之前导出的 JSON 备份，覆盖当前数据。换设备时用它恢复。</p>
@@ -1577,13 +1645,59 @@ function doUnlock(){
   const v=($("#admPass")&&$("#admPass").value)||"";
   if(hashPass(v)===ADMIN_HASH){
     ADMIN=true; try{ localStorage.setItem(ADMIN_KEY,"1"); }catch(e){}
-    closeModal(); render(); flash(); toast("已解锁 · 现在可以编辑了");
+    closeModal(); flash(); toast("已解锁 · 现在可以编辑了");
+    loadData().then(()=>{ render(); maybeConflict(); });   // 按管理员上下文重新协调(载入本机未发布修改)
   } else {
     const m=$("#modalBox"); if(m){ m.style.animation="none"; void m.offsetWidth; m.style.animation="shake .4s"; }
     toast("密码不对，请重试");
   }
 }
-function lockAdmin(){ ADMIN=false; try{ localStorage.removeItem(ADMIN_KEY); }catch(e){} render(); toast("已切回浏览模式（只读）"); }
+function lockAdmin(){
+  if(UNPUBLISHED || isDirty()){
+    confirmModal("锁定为浏览模式？","你有 <b>未发布</b> 的修改。锁定后会显示线上版本，你的修改仍留在本机，下次解锁可继续或发布。<br>建议先点『发布到网上』。仍要锁定吗？",()=>doLock());
+    return;
+  }
+  doLock();
+}
+function doLock(){ ADMIN=false; ADMIN_PW=""; try{ localStorage.removeItem(ADMIN_KEY); }catch(e){} loadData().then(()=>render()); toast("已切回浏览模式（只读）"); }
+
+/* ===== 在线发布：把当前数据通过 Worker 提交到仓库 data.json ===== */
+function publish(){
+  if(needAdmin()) return;
+  if(!publishUrl()){ openPublishSetup(); return; }
+  if(ADMIN_PW){ doPublish(ADMIN_PW); return; }
+  openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h3>发布到网上</h3><div class="m-sub">输入<b>发布密码</b>（你在 Worker 里设置的 ADMIN_PASSWORD，与网页解锁密码不同、且应更强）。发布后约 1 分钟，所有人刷新可见。</div>
+    <div class="m-body"><label class="fld">发布密码<input type="password" id="pubPass" autocomplete="off" onkeydown="if(event.key==='Enter')doPublishFromModal()"></label></div>
+    <div class="m-foot"><button class="btn" onclick="closeModal()">取消</button><button class="btn gold" onclick="doPublishFromModal()">确认发布</button></div>`);
+  setTimeout(()=>{ const i=$("#pubPass"); if(i) i.focus(); },60);
+}
+function doPublishFromModal(){ const pw=($("#pubPass")&&$("#pubPass").value)||""; closeModal(); doPublish(pw); }
+let PUBLISHING=false;
+async function doPublish(pw){
+  if(PUBLISHING) return;
+  const url=publishUrl(); if(!url){ openPublishSetup(); return; }
+  PUBLISHING=true; toast("正在发布到网上…");
+  const stamp=nowISO();
+  const payload=Object.assign({}, DB, {publishedAt:stamp});
+  try{
+    const r=await fetch(url,{method:"POST",headers:{"Content-Type":"application/json"},body:JSON.stringify({password:pw,data:payload})});
+    let j={}; try{ j=await r.json(); }catch(e){}
+    if(r.ok && j.ok){ DB.publishedAt=stamp; ADMIN_PW=pw; persistLocal(); clearDirty(); render(); flash(); toast("已发布 ✓ 约 1 分钟后所有人刷新可见"); }
+    else if(r.status===401){ ADMIN_PW=""; toast("发布失败：发布密码不对"); }
+    else { toast("发布失败："+(j.error||("HTTP "+r.status))); }
+  }catch(e){ console.error(e); toast("发布失败：网络错误，请检查 Worker 网址是否正确"); }
+  finally{ PUBLISHING=false; }
+}
+function openPublishSetup(){
+  openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h3>在线发布设置</h3>
+    <div class="m-sub">让你的修改保存到网上、所有人可见，需先部署一个<b>免费</b>的 Cloudflare Worker，把它的网址填到这里。完整步骤见仓库根目录 <b>worker-setup.md</b>。</div>
+    <div class="m-body"><label class="fld">Worker 网址<input id="pubUrl" value="${esc(publishUrl())}" placeholder="https://myskme-publish.xxx.workers.dev"></label>
+      <div class="muted" style="margin-top:8px">只填你自己部署的 Worker 地址，切勿填别人发来的链接。</div></div>
+    <div class="m-foot"><button class="btn" onclick="closeModal()">取消</button><button class="btn gold" onclick="savePublishUrl()">保存</button></div>`);
+}
+function savePublishUrl(){ const u=(($("#pubUrl")&&$("#pubUrl").value)||"").trim(); if(u && !/^https:\/\//i.test(u)){ return toast("请填 https:// 开头的 Worker 网址"); } try{ localStorage.setItem(PUBLISH_KEY,u); }catch(e){} closeModal(); render(); toast(u?"已保存 Worker 网址":"已清除网址"); }
 function exportCSV(){
   const ss=curSeason();
   let head=["序号","小组","姓名"];
@@ -1762,9 +1876,14 @@ Object.assign(window,{setSbView,setTri,addStudent,doAddStudent,renameStudent,doR
   closeModal,confirmModal,assignGroup,autoGroup,addGroup,renameGroup,delGroup,fixAnomaly,
   switchSeason,newSeason,doNewSeason,editSeason,doEditSeason,archiveSeason,unarchive,dupSeason,delSeason,resetKeepRoster,resetAll,
   exportJSON,importJSON,restoreBackup,toggleFx,exportCSV,showDeploy,showCard,showPoster,svgToPng,
-  unlockAdmin,doUnlock,lockAdmin,hashPass,UI});
+  unlockAdmin,doUnlock,lockAdmin,doLock,hashPass,maybeConflict,resolveConflict,
+  publish,doPublishFromModal,doPublish,openPublishSetup,savePublishUrl,UI});
 try{ ADMIN = localStorage.getItem(ADMIN_KEY)==="1"; }catch(e){ ADMIN=false; }
-load(); render();
+(async function boot(){
+  load(); render();              // 本地数据秒开
+  await loadData(); render();    // 再用线上共享数据覆盖(若有)
+  maybeConflict();
+})();
 // 每分钟刷新"更新于"相对时间
 setInterval(renderStamps,60000);
 </script>
