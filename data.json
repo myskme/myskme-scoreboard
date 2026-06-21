@@ -1,7 +1,7 @@
 {
  "schemaVersion": 1,
  "app": "myskme-scoreboard",
- "currentSeasonId": "ssn_june",
+ "currentSeasonId": "ssn_dyn4oo582",
  "settings": {
   "recorder": "Mr.Wang",
   "maxCls": 3,
@@ -23,22 +23,26 @@
     {
      "id": "grp_1",
      "name": "火队",
-     "color": "--red"
+     "color": "--red",
+     "emblem": "flame"
     },
     {
      "id": "grp_2",
      "name": "水队",
-     "color": "--blue"
+     "color": "--blue",
+     "emblem": "drop"
     },
     {
      "id": "grp_3",
      "name": "林队",
-     "color": "--green"
+     "color": "--green",
+     "emblem": "leaf"
     },
     {
      "id": "grp_4",
      "name": "雷队",
-     "color": "--purple"
+     "color": "--purple",
+     "emblem": "bolt"
     }
    ],
    "students": [
@@ -772,7 +776,306 @@
      }
     }
    }
+  },
+  {
+   "id": "ssn_dyn4oo582",
+   "name": "第二赛季 6 月",
+   "recorder": "Mr.Wang",
+   "startDate": "2026-06-21",
+   "createdAt": "2026-06-21T02:25:10.706Z",
+   "updatedAt": "2026-06-21T02:27:41.113Z",
+   "status": "active",
+   "archivedAt": null,
+   "groups": [
+    {
+     "id": "grp_dx4oi0583",
+     "name": "火队",
+     "color": "--red",
+     "emblem": "flame"
+    },
+    {
+     "id": "grp_emo0gh583",
+     "name": "水队",
+     "color": "--blue",
+     "emblem": "drop"
+    },
+    {
+     "id": "grp_3lq6d0583",
+     "name": "林队",
+     "color": "--green",
+     "emblem": "leaf"
+    },
+    {
+     "id": "grp_js1zzf583",
+     "name": "雷队",
+     "color": "--purple",
+     "emblem": "bolt"
+    }
+   ],
+   "students": [
+    {
+     "id": "stu_rducg9583",
+     "name": "李思瑾",
+     "groupId": "grp_dx4oi0583",
+     "active": true,
+     "order": 1,
+     "note": ""
+    },
+    {
+     "id": "stu_zhkusv583",
+     "name": "刘晨晰",
+     "groupId": "grp_emo0gh583",
+     "active": true,
+     "order": 2,
+     "note": ""
+    },
+    {
+     "id": "stu_6t7ta7583",
+     "name": "王启旭",
+     "groupId": "grp_3lq6d0583",
+     "active": true,
+     "order": 3,
+     "note": ""
+    },
+    {
+     "id": "stu_25hsgf583",
+     "name": "姚逸琳",
+     "groupId": "grp_js1zzf583",
+     "active": true,
+     "order": 4,
+     "note": ""
+    },
+    {
+     "id": "stu_jypkij583",
+     "name": "王涵",
+     "groupId": "grp_dx4oi0583",
+     "active": true,
+     "order": 5,
+     "note": ""
+    },
+    {
+     "id": "stu_vufhu1583",
+     "name": "宫睿",
+     "groupId": "grp_emo0gh583",
+     "active": true,
+     "order": 6,
+     "note": ""
+    },
+    {
+     "id": "stu_23z9pe583",
+     "name": "时海诺",
+     "groupId": "grp_3lq6d0583",
+     "active": true,
+     "order": 7,
+     "note": ""
+    },
+    {
+     "id": "stu_r169u1583",
+     "name": "王浩轩",
+     "groupId": "grp_js1zzf583",
+     "active": true,
+     "order": 8,
+     "note": ""
+    },
+    {
+     "id": "stu_z166js583",
+     "name": "吴嘉麒",
+     "groupId": "grp_dx4oi0583",
+     "active": true,
+     "order": 9,
+     "note": ""
+    },
+    {
+     "id": "stu_kalhpq583",
+     "name": "衣璇",
+     "groupId": "grp_emo0gh583",
+     "active": true,
+     "order": 10,
+     "note": ""
+    },
+    {
+     "id": "stu_x6qdpx583",
+     "name": "尹一航",
+     "groupId": "grp_3lq6d0583",
+     "active": true,
+     "order": 11,
+     "note": ""
+    },
+    {
+     "id": "stu_bhnm51583",
+     "name": "郭金慧",
+     "groupId": "grp_js1zzf583",
+     "active": true,
+     "order": 12,
+     "note": ""
+    },
+    {
+     "id": "stu_4xaeb8583",
+     "name": "音",
+     "groupId": "grp_dx4oi0583",
+     "active": true,
+     "order": 13,
+     "note": ""
+    },
+    {
+     "id": "stu_mmugf9583",
+     "name": "李昕诺",
+     "groupId": "grp_emo0gh583",
+     "active": true,
+     "order": 14,
+     "note": ""
+    },
+    {
+     "id": "stu_o0mxn8583",
+     "name": "叶王",
+     "groupId": "grp_3lq6d0583",
+     "active": true,
+     "order": 15,
+     "note": ""
+    },
+    {
+     "id": "stu_zodwnw583",
+     "name": "洋",
+     "groupId": "grp_js1zzf583",
+     "active": true,
+     "order": 16,
+     "note": ""
+    },
+    {
+     "id": "stu_f76pfg583",
+     "name": "荣",
+     "groupId": "grp_dx4oi0583",
+     "active": true,
+     "order": 17,
+     "note": ""
+    },
+    {
+     "id": "stu_lvvi6c583",
+     "name": "炜",
+     "groupId": "grp_emo0gh583",
+     "active": true,
+     "order": 18,
+     "note": ""
+    },
+    {
+     "id": "stu_79sx2z583",
+     "name": "月",
+     "groupId": "grp_3lq6d0583",
+     "active": true,
+     "order": 19,
+     "note": ""
+    },
+    {
+     "id": "stu_f843zx583",
+     "name": "铎",
+     "groupId": "grp_js1zzf583",
+     "active": true,
+     "order": 20,
+     "note": ""
+    },
+    {
+     "id": "stu_7haobe583",
+     "name": "晓",
+     "groupId": "grp_dx4oi0583",
+     "active": true,
+     "order": 21,
+     "note": ""
+    },
+    {
+     "id": "stu_sy9efu583",
+     "name": "文",
+     "groupId": "grp_emo0gh583",
+     "active": true,
+     "order": 22,
+     "note": ""
+    },
+    {
+     "id": "stu_61xgm5583",
+     "name": "马铭璐",
+     "groupId": "grp_3lq6d0583",
+     "active": true,
+     "order": 23,
+     "note": ""
+    }
+   ],
+   "sessions": [
+    {
+     "id": "les_kaqicdpn3",
+     "index": 1,
+     "date": "2026-06-21",
+     "note": "",
+     "winningGroupIds": []
+    }
+   ],
+   "scores": {
+    "stu_zhkusv583": {
+     "les_kaqicdpn3": {
+      "cls": 0,
+      "comp": 2
+     }
+    },
+    "stu_6t7ta7583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_25hsgf583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_jypkij583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_vufhu1583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_79sx2z583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_f843zx583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_7haobe583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_sy9efu583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    },
+    "stu_kalhpq583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 0
+     }
+    },
+    "stu_bhnm51583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
+    }
+   }
   }
  ],
- "publishedAt": "2026-06-20T15:07:59.913Z"
+ "publishedAt": "2026-06-21T02:27:59.157Z"
 }
