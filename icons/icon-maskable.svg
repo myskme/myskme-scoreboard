@@ -1,0 +1,33 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="42%" r="72%">
+      <stop offset="0%" stop-color="#20202a"/>
+      <stop offset="60%" stop-color="#101015"/>
+      <stop offset="100%" stop-color="#0a0a0c"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0d27e"/>
+      <stop offset="48%" stop-color="#e8c768"/>
+      <stop offset="100%" stop-color="#a07c1e"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <!-- 满铺到边的实底，遮罩裁切后仍是深色，无透明角 -->
+  <rect width="512" height="512" fill="url(#bg)"/>
+  <!-- 主体缩进到中心约 78% 圆形安全区内(去掉外框，避免四角被自适应遮罩裁掉) -->
+  <g transform="translate(256 256) scale(0.78) translate(-256 -271)">
+    <g fill="none" stroke="url(#gold)" stroke-width="13" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)">
+      <path d="M168 168 L150 96 L214 150 M344 168 L362 96 L298 150"/>
+      <path d="M168 168 Q150 250 196 318 Q230 366 256 380 Q282 366 316 318 Q362 250 344 168"/>
+      <path d="M256 214 L256 322 M222 300 L256 322 L290 300"/>
+    </g>
+    <g fill="url(#gold)">
+      <path d="M196 232 q22 -16 44 4 q-24 8 -44 -4 z"/>
+      <path d="M316 232 q-22 -16 -44 4 q24 8 44 -4 z"/>
+    </g>
+    <text x="256" y="446" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="44" font-weight="700" letter-spacing="6" fill="url(#gold)">MYSKME</text>
+  </g>
+</svg>

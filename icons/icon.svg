@@ -1,0 +1,36 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <radialGradient id="bg" cx="50%" cy="38%" r="75%">
+      <stop offset="0%" stop-color="#20202a"/>
+      <stop offset="55%" stop-color="#101015"/>
+      <stop offset="100%" stop-color="#0a0a0c"/>
+    </radialGradient>
+    <linearGradient id="gold" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0%" stop-color="#f0d27e"/>
+      <stop offset="48%" stop-color="#e8c768"/>
+      <stop offset="100%" stop-color="#a07c1e"/>
+    </linearGradient>
+    <filter id="glow" x="-30%" y="-30%" width="160%" height="160%">
+      <feGaussianBlur stdDeviation="6" result="b"/>
+      <feMerge><feMergeNode in="b"/><feMergeNode in="SourceGraphic"/></feMerge>
+    </filter>
+  </defs>
+  <rect width="512" height="512" rx="96" fill="url(#bg)"/>
+  <rect x="26" y="26" width="460" height="460" rx="74" fill="none" stroke="url(#gold)" stroke-width="3" opacity="0.85"/>
+  <rect x="42" y="42" width="428" height="428" rx="62" fill="none" stroke="url(#gold)" stroke-width="1.2" stroke-dasharray="2 7" opacity="0.5"/>
+  <!-- 狼先生 · 几何狼头 -->
+  <g fill="none" stroke="url(#gold)" stroke-width="13" stroke-linejoin="round" stroke-linecap="round" filter="url(#glow)">
+    <!-- 双耳 + 脸庞轮廓 -->
+    <path d="M168 168 L150 96 L214 150 M344 168 L362 96 L298 150"/>
+    <path d="M168 168 Q150 250 196 318 Q230 366 256 380 Q282 366 316 318 Q362 250 344 168"/>
+    <!-- 鼻梁与吻部 -->
+    <path d="M256 214 L256 322 M222 300 L256 322 L290 300"/>
+  </g>
+  <!-- 双眼 -->
+  <g fill="url(#gold)">
+    <path d="M196 232 q22 -16 44 4 q-24 8 -44 -4 z"/>
+    <path d="M316 232 q-22 -16 -44 4 q24 8 44 -4 z"/>
+  </g>
+  <!-- 底部品牌缩写 -->
+  <text x="256" y="446" text-anchor="middle" font-family="Georgia, 'Times New Roman', serif" font-size="40" font-weight="700" letter-spacing="5" fill="url(#gold)">MYSKME</text>
+</svg>

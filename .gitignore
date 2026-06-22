@@ -2,7 +2,8 @@
 .DS_Store
 .AppleDouble
 .LSOverride
-Icon?
+# 不要用 "Icon?"——大小写不敏感文件系统上它会误伤 icons/ 目录（PWA 图标）
+!icons/
 
 # 编辑器/工具
 .vscode/
