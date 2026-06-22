@@ -4,6 +4,14 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
 <title>王老师的英语课 · MYSKME 课堂记分编年史</title>
+<!-- PWA：可加到手机主屏、离线可用 -->
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#0a0a0c">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="MYSKME 记分">
+<link rel="apple-touch-icon" href="icons/icon-192.png">
 <style>
 /* ============== 黑金编年史 · Design Tokens ============== */
 :root{
@@ -178,6 +186,8 @@ tr.stu-row:hover td.col-name{background:#1a1a1f}
 .cell.full::after{content:'';position:absolute;top:3px;right:3px;width:5px;height:5px;border-top:1px solid var(--gold);border-right:1px solid var(--gold);opacity:.6}
 .cell.bad{color:var(--red2);box-shadow:inset 0 0 0 1px var(--red)}
 .cell.bad::before{content:'!';position:absolute;top:1px;right:3px;font-size:10px;color:var(--red2);font-weight:700}
+.cell.absent{color:var(--red2);font-size:13px;letter-spacing:.04em}
+.cell.absent::after{content:'';position:absolute;top:50%;left:20%;right:20%;height:1px;background:var(--red);opacity:.38;transform:rotate(-16deg)}
 .cell.locked{cursor:not-allowed;opacity:.7}
 .cell .pop{transform:scale(1)}
 @keyframes scoreIn{0%{transform:scale(.4);opacity:.2}60%{transform:scale(1.25)}100%{transform:scale(1)}}
@@ -215,6 +225,9 @@ td.col-cum{min-width:96px;padding:0 8px}
 .tri button:last-child{border-right:0}
 .tri button.on{background:linear-gradient(180deg,rgba(201,166,74,.25),rgba(201,166,74,.07));color:var(--gold2);text-shadow:0 0 10px rgba(201,166,74,.5)}
 .tri button:hover{background:rgba(201,166,74,.12)}
+.tri button.miss{font-size:13px}
+.tri button.miss.on{background:linear-gradient(180deg,rgba(168,48,48,.32),rgba(168,48,48,.08));color:var(--red2);text-shadow:0 0 10px rgba(168,48,48,.5)}
+.tri button.miss:hover{background:rgba(168,48,48,.16)}
 .lr-cum{min-width:42px;text-align:right;font-size:18px;color:var(--gold2);font-weight:300}
 
 /* ============== 排行榜 ============== */
@@ -871,29 +884,41 @@ function setCell(ss,stuId,sesId,field,val){
   if(!ss.scores[stuId][sesId]) ss.scores[stuId][sesId]={cls:null,comp:null};
   ss.scores[stuId][sesId][field]=val;
 }
-function cellTotal(c){ if(!c) return 0; return (c.cls||0)+(c.comp||0); }
-function isRecorded(c){ return c && (c.cls!=null || c.comp!=null); }
+const ABSENT="x";                                          // 缺席(课堂)/缺交(作文)哨兵；与 0分、未录(null) 三者区分
+function val(v){ return typeof v==='number' ? v : 0; }     // 求和用：仅数字按原值，"x"(缺)与 null 一律按 0，杜绝 NaN
+function isAbsent(v){ return v===ABSENT; }
+function cellTotal(c){ if(!c) return 0; return val(c.cls)+val(c.comp); }
+function isRecorded(c){ return c && (c.cls!=null || c.comp!=null); }   // "x" 也算"已处理"（'x'!=null 为真）
 function stuTotals(ss,stu){
   let cls=0,comp=0,rec=0;
   ss.sessions.forEach(se=>{
     const c=getCell(ss,stu.id,se.id);
-    if(c){ if(c.cls!=null) cls+=c.cls; if(c.comp!=null) comp+=c.comp; if(isRecorded(c)) rec++; }
+    if(c){ cls+=val(c.cls); comp+=val(c.comp); if(isRecorded(c)) rec++; }
   });
   return {cls,comp,total:cls+comp,recorded:rec};
 }
-// 到课率 + 作业完成率：从该生"首次有记录"那次课起算(对插班生公平)；记0分也算到课；作业完成=作文>=1
+// 到课率 + 作业完成率：从该生"首次有记录"那次课起算(对插班生公平)。
+// 口径：课堂记数字=到课；课堂="x"=缺席(计入应到分母,不算到课)；未录(null)不计。
+// 作业完成=作文>=1(数字)；作文=0 或 "x"(缺交) 都算未完成。分母=到课次数。
 function attendanceStats(ss,stu){
   const ses=(ss.sessions||[]).slice().sort((a,b)=>(a.index||0)-(b.index||0));
   const total=ses.length;
   let firstIdx=-1;
   for(let i=0;i<total;i++){ if(isRecorded(getCell(ss,stu.id,ses[i].id))){ firstIdx=i; break; } }
-  if(total===0||firstIdx===-1) return {attended:0,enrolled:0,rate:null,homeworkDone:0,homeworkRate:null,perfect:false,diligent:false};
-  const enrolled=total-firstIdx; let attended=0,homeworkDone=0;
-  for(let i=firstIdx;i<total;i++){ const c=getCell(ss,stu.id,ses[i].id); if(isRecorded(c)){ attended++; if(c.comp!=null&&c.comp>=1) homeworkDone++; } }
+  if(total===0||firstIdx===-1) return {attended:0,enrolled:0,absent:0,rate:null,homeworkDone:0,homeworkRate:null,perfect:false,diligent:false};
+  let attended=0,absent=0,homeworkDone=0;
+  for(let i=firstIdx;i<total;i++){
+    const c=getCell(ss,stu.id,ses[i].id);
+    if(!isRecorded(c)) continue;                              // 未录 → 不计入分母
+    if(isAbsent(c.cls)){ absent++; continue; }                // 课堂=缺 → 缺席,不计到课,不看作业
+    attended++;                                               // 课堂记数字(或只录了作文) → 到课
+    if(typeof c.comp==='number' && c.comp>=1) homeworkDone++; // 作文完成
+  }
+  const enrolled=attended+absent;                             // 应到 = 到课 + 缺席
   const rate=enrolled>0?attended/enrolled:null, homeworkRate=attended>0?homeworkDone/attended:null;
   const perfect=rate===1 && enrolled>=Math.ceil(total*0.6);
   const diligent=homeworkRate===1 && attended>=Math.ceil(total*0.6);
-  return {attended,enrolled,rate,homeworkDone,homeworkRate,perfect,diligent};
+  return {attended,enrolled,absent,rate,homeworkDone,homeworkRate,perfect,diligent};
 }
 function fmtRate(done,base){ if(!base) return "—"; return done+"/"+base+" · "+Math.round(done/base*100)+"%"; }
 function activeStudents(ss){ return ss.students.filter(s=>s.active!==false); }
@@ -940,7 +965,7 @@ function classStats(ss){
 function countFull(ss){
   let n=0;
   activeStudents(ss).forEach(st=> ss.sessions.forEach(se=>{
-    const c=getCell(ss,st.id,se.id); if(c && c.comp===maxFor('comp')) n++;
+    const c=getCell(ss,st.id,se.id); if(c && typeof c.comp==='number' && c.comp===maxFor('comp')) n++;
   }));
   return n;
 }
@@ -977,8 +1002,8 @@ function anomalies(ss){
   const out=[];
   activeStudents(ss).forEach(st=> ss.sessions.forEach(se=>{
     const c=getCell(ss,st.id,se.id); if(!c) return;
-    if(c.cls!=null && c.cls>maxFor('cls')) out.push({st,se,field:"cls",val:c.cls});
-    if(c.comp!=null && c.comp>maxFor('comp')) out.push({st,se,field:"comp",val:c.comp});
+    if(typeof c.cls==='number' && c.cls>maxFor('cls')) out.push({st,se,field:"cls",val:c.cls});
+    if(typeof c.comp==='number' && c.comp>maxFor('comp')) out.push({st,se,field:"comp",val:c.comp});
   }));
   return out;
 }
@@ -1096,7 +1121,7 @@ function viewBoard(){
     ${body}
     <div class="row" style="margin-top:12px">
       <span class="hint"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg>
-      点一下格子循环加分（课堂 0-3、作文 0-2，再点归空）；红格为超上限的异常值。</span>
+      点一下格子循环：0→1→…→满分→<b style="color:var(--red2)">缺</b>→空白。「缺」＝缺席(课堂)/缺交(作文)，与「0 分(到了/交了但得0)」分开统计到课率与作业完成率。</span>
     </div>
   </div>`;
 }
@@ -1131,10 +1156,13 @@ function boardGrid(ss){
 function cellHtml(stuId,sesId,c,field){
   const v = c? c[field] : null;
   const mx=maxFor(field);
-  let cls="cell"; if(v==null) cls+=" empty"; else if(v>mx) cls+=" bad"; else if(v===mx) cls+=" full";
+  const ax=isAbsent(v);
+  let cls="cell"; if(v==null) cls+=" empty"; else if(ax) cls+=" absent"; else if(v>mx) cls+=" bad"; else if(v===mx) cls+=" full";
   if(isLocked()) cls+=" locked";
-  const aria=`${field==='cls'?'课堂':'作文'} ${v==null?'未录':v+'分'}`;
-  return `<td><div class="${cls}" role="button" tabindex="${isLocked()?-1:0}" aria-label="${aria}" data-stu="${stuId}" data-ses="${sesId}" data-field="${field}" data-v="${v==null?'':v}">${v==null?'—':v}</div></td>`;
+  const lbl=field==='cls'?'课堂':'作文';
+  const aria=`${lbl} ${v==null?'未录':(ax?(field==='cls'?'缺席':'缺交'):v+'分')}`;
+  const disp=v==null?'—':(ax?'缺':v);
+  return `<td><div class="${cls}" role="button" tabindex="${isLocked()?-1:0}" aria-label="${aria}" data-stu="${stuId}" data-ses="${sesId}" data-field="${field}" data-v="${v==null?'':v}">${disp}</div></td>`;
 }
 function boardLesson(ss){
   if(!ss.sessions.length) return emptyState("还没有次课","点上方『添加次课』新建第一次课");
@@ -1144,6 +1172,7 @@ function boardLesson(ss){
   let opts=ss.sessions.map((s,i)=>`<option value="${i}" ${i===UI.lessonIdx?'selected':''}>第${s.index}次课 · ${mmdd(s.date)}</option>`).join("");
   const stat=sessionAvg(ss,se);
   const notRec=activeStudents(ss).filter(st=>!isRecorded(getCell(ss,st.id,se.id))).length;
+  const absN=activeStudents(ss).filter(st=>{const c=getCell(ss,st.id,se.id);return c&&isAbsent(c.cls);}).length;
   let rows="";
   ss.students.filter(s=>s.active!==false).forEach(st=>{
     const g=groupById(ss,st.groupId);
@@ -1170,6 +1199,7 @@ function boardLesson(ss){
   <div class="row" style="margin-bottom:10px">
     <span class="pill">本次均分 ${stat.avg.toFixed(2)}</span>
     <span class="pill">已录 ${stat.n}/${activeStudents(ss).length}</span>
+    ${absN?`<span class="pill" style="color:var(--red2);border-color:var(--red)">缺席 ${absN} 人</span>`:""}
     ${notRec?`<span class="pill" style="color:var(--red2);border-color:var(--red)">还剩 ${notRec} 人未录</span>`:`<span class="pill" style="color:var(--green);border-color:var(--green)">全部录入完成</span>`}
     ${(se.winningGroupIds&&se.winningGroupIds.length)?`<span class="pill" style="color:var(--gold2);border-color:var(--gold)">胜组：${se.winningGroupIds.map(id=>esc((groupById(ss,id)||{}).name||'')).join('、')}</span>`:""}
   </div>
@@ -1177,33 +1207,36 @@ function boardLesson(ss){
 }
 function triBtns(stuId,sesId,field,v){
   const mx=maxFor(field);
-  const mk=(n,lbl)=>`<button class="${v===n?'on':''}" onclick="setTri('${stuId}','${sesId}','${field}',${n})" ${isLocked()?'disabled':''}>${lbl}</button>`;
-  let b=""; for(let n=0;n<=mx;n++) b+=mk(n,n);
-  b+=`<button class="${v==null?'on':''}" onclick="setTri('${stuId}','${sesId}','${field}',null)" ${isLocked()?'disabled':''}>—</button>`;
+  const dis=isLocked()?'disabled':'';
+  const mk=(arg,on,lbl,extra)=>`<button class="${on?'on':''}${extra||''}" onclick="setTri('${stuId}','${sesId}','${field}',${arg})" ${dis}>${lbl}</button>`;
+  let b=mk("'"+ABSENT+"'",isAbsent(v),'缺',' miss');          // 缺席/缺交，放最前
+  for(let n=0;n<=mx;n++) b+=mk(n,v===n,n);
+  b+=mk("null",v==null,'—');                                  // 未录
   return `<div class="tri">${b}</div>`;
 }
 function setTri(stuId,sesId,field,val){
   if(isLocked()) return;
   const ss=curSeason(); setCell(ss,stuId,sesId,field,val); save();
-  if(val) flash();
+  if(typeof val==='number' && val) flash();
   render();
 }
 function setSbView(v){ UI.sbView=v; try{ localStorage.setItem("myskme_sbview",v); }catch(e){} render(); }   // 视图偏好：本地存，不入 DB/不入撤销栈/不标脏
 
-/* 网格格子点击：循环 — → 0 → 1 → 2 */
+/* 网格格子点击：循环 — → 0 → 1 → … → 上限 → 缺 → — */
 document.addEventListener("click",e=>{
   const cell=e.target.closest(".cell");
   if(!cell || isLocked()) return;
   const {stu,ses,field}=cell.dataset;
   const mx=maxFor(field);
-  let v=cell.dataset.v===""? null : +cell.dataset.v;
-  v = v==null? 0 : (v>=mx? null : v+1);
+  const raw=cell.dataset.v;
+  let v = raw===""? null : (raw===ABSENT? ABSENT : +raw);
+  if(v==null) v=0; else if(isAbsent(v)) v=null; else if(v>=mx) v=ABSENT; else v=v+1;
   const ss=curSeason(); setCell(ss,stu,ses,field,v); save();
-  // 飞数字
-  if(v){ const r=cell.getBoundingClientRect(); flyNum(r.left+r.width/2-6,r.top,"+"+v); flash(); }
+  // 飞数字（仅数字得分）
+  if(typeof v==='number' && v){ const r=cell.getBoundingClientRect(); flyNum(r.left+r.width/2-6,r.top,"+"+v); flash(); }
   // 局部更新该格 + 该行累计，避免整页重渲染打断手感
-  let klass="cell"; if(v==null)klass+=" empty"; else if(v>mx)klass+=" bad"; else if(v===mx)klass+=" full"; klass+=" bump";
-  cell.className=klass; cell.dataset.v=v==null?"":v; cell.textContent=v==null?"—":v;
+  let klass="cell"; if(v==null)klass+=" empty"; else if(isAbsent(v))klass+=" absent"; else if(v>mx)klass+=" bad"; else if(v===mx)klass+=" full"; klass+=" bump";
+  cell.className=klass; cell.dataset.v=v==null?"":v; cell.textContent=v==null?"—":(isAbsent(v)?"缺":v);
   setTimeout(()=>cell.classList.remove("bump"),420);
   updateRowCum();
 });
@@ -1371,6 +1404,7 @@ function doTeamBattle(sesId){
   activeStudents(ss).forEach(st=>{
     if(!st.groupId) return;
     const c=getCell(ss,st.id,se.id);
+    if(c && isAbsent(c.cls)) return;                        // 缺席者一律不补分
     // 胜组：全员课堂补到 2（批量），但绝不下调已有更高分(如手填的 3 保持不变)
     if(winSet.has(st.groupId)){ if(c==null||c.cls==null||c.cls<2) setCell(ss,st.id,se.id,"cls",2); }
     // 非胜组：仅对『本次已出勤(已录)』者补到 1，缺勤/未录一律不动
@@ -1619,13 +1653,15 @@ function viewStats(){
     <div class="kpi"><div class="k-label">作文满分次</div><div class="k-val">${cs.fullCount}</div><div class="k-sub">认真规范的作文(${maxFor('comp')}分)</div></div>
     <div class="kpi"><div class="k-label">异常待处理</div><div class="k-val" style="color:${anom.length?'var(--red2)':'var(--gold2)'}">${anom.length}</div><div class="k-sub">超上限(课堂>3/作文>2)</div></div>
   </div>`;
+  const sumAbs=attList.reduce((a,b)=>a+(b.absent||0),0);
   const attPanel=`<div class="panel">
-    <div class="panel-h"><span class="dot"></span>出勤 & 作业 <small>到课率/作业完成率 · 低于 70% 标红，便于跟进</small></div>
-    <table class="board"><thead><tr><th>姓名</th><th>到课率</th><th>作业完成率</th></tr></thead><tbody>${attList.map(a=>{
+    <div class="panel-h"><span class="dot"></span>出勤 & 作业 <small>到课率＝到课/(到课+缺席) · 作业完成率＝作文≥1/到课 · 低于 70% 标红${sumAbs?` · 本季缺席 ${sumAbs} 人次`:''}</small></div>
+    <table class="board"><thead><tr><th>姓名</th><th>到课率</th><th>缺席</th><th>作业完成率</th></tr></thead><tbody>${attList.map(a=>{
       const low=a.rate!=null&&a.rate<0.7;
       return `<tr ${low?'style="background:rgba(168,48,48,.10)"':''}>
         <td><b>${esc(a.st.name)}</b></td>
         <td>${a.perfect?`<span style="color:var(--gold2)">${fmtRate(a.attended,a.enrolled)} · 全勤</span>`:`<span ${low?'style="color:var(--red2)"':''}>${fmtRate(a.attended,a.enrolled)}</span>`}</td>
+        <td>${a.absent?`<span style="color:var(--red2)">${a.absent}</span>`:'<span style="color:var(--ink4)">0</span>'}</td>
         <td>${a.diligent?`<span style="color:var(--gold2)">${fmtRate(a.homeworkDone,a.attended)} ✦</span>`:fmtRate(a.homeworkDone,a.attended)}</td></tr>`;
     }).join("")}</tbody></table>
   </div>`;
@@ -2047,7 +2083,8 @@ function exportCSV(){
   ss.students.filter(s=>s.active!==false).forEach(st=>{
     const g=groupById(ss,st.groupId);
     const r=[st.order, g?g.name:"", st.name];
-    ss.sessions.forEach(se=>{const c=getCell(ss,st.id,se.id);r.push(c&&c.cls!=null?c.cls:"",c&&c.comp!=null?c.comp:"");});
+    const fmtCSV=v=> v==null?"":(isAbsent(v)?"缺":v);
+    ss.sessions.forEach(se=>{const c=getCell(ss,st.id,se.id);r.push(fmtCSV(c&&c.cls),fmtCSV(c&&c.comp));});
     const t=stuTotals(ss,st); r.push(t.cls,t.comp,t.total);
     rows.push(r);
   });
@@ -2290,7 +2327,10 @@ function renderParent(sid){
   if(!found){ v.innerHTML=parentShell(`<div class="empty-state"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M12 8v5M12 16h.01"/></svg><div style="font-size:15px;color:var(--ink2)">未找到该学生</div><div class="muted" style="margin-top:6px">二维码可能已过期，或名单有变动。</div></div>`); return; }
   const ss=found.season, st=found.st, g=groupById(ss,st.groupId);
   const arr=rankList(ss), me=arr.find(r=>r.st.id===st.id), t=stuTotals(ss,st), at=attendanceStats(ss,st);
-  let detail=""; ss.sessions.forEach(se=>{ const c=getCell(ss,st.id,se.id); detail+=`<div class="pv-row"><span>第${se.index}次课 · ${mmdd(se.date)}</span><span>课堂 ${c&&c.cls!=null?c.cls:'—'} · 作文 ${c&&c.comp!=null?c.comp:'—'}</span></div>`; });
+  let detail=""; ss.sessions.forEach(se=>{ const c=getCell(ss,st.id,se.id);
+    const fc=!c||c.cls==null?'—':(isAbsent(c.cls)?'<b style="color:var(--red2)">缺席</b>':c.cls);
+    const fp=!c||c.comp==null?'—':(isAbsent(c.comp)?'<b style="color:var(--red2)">缺交</b>':c.comp);
+    detail+=`<div class="pv-row"><span>第${se.index}次课 · ${mmdd(se.date)}</span><span>课堂 ${fc} · 作文 ${fp}</span></div>`; });
   v.innerHTML=parentShell(`
     ${ss.status==="archived"?`<div class="pv-archbar">本赛季已结束，以下为存档成绩。</div>`:''}
     <div class="pv-card">
@@ -2350,6 +2390,26 @@ PARENT_ID = new URLSearchParams(location.search).get("s");   // 家长视图：?
 })();
 // 每分钟刷新"更新于"相对时间
 setInterval(renderStamps,60000);
+// PWA：注册 Service Worker(仅 https 生产环境，避免污染本地预览缓存)；让网页可加到主屏、离线可用
+if("serviceWorker" in navigator && location.protocol==="https:"){
+  window.addEventListener("load",()=>{
+    navigator.serviceWorker.register("sw.js").then(reg=>{
+      // 发现新版本：装好后(且已有旧版在控)轻提示，点一下即刷新到最新
+      reg.addEventListener("updatefound",()=>{
+        const w=reg.installing; if(!w) return;
+        w.addEventListener("statechange",()=>{
+          if(w.state==="installed" && navigator.serviceWorker.controller){
+            const t=document.getElementById("toast");
+            if(t){ t.innerHTML='发现新版本 · <u style="cursor:pointer">点此刷新</u>'; t.classList.add("show");
+              t.onclick=()=>{ w.postMessage("skipWaiting"); }; }
+          }
+        });
+      });
+    }).catch(()=>{});
+    let reloaded=false;
+    navigator.serviceWorker.addEventListener("controllerchange",()=>{ if(reloaded) return; reloaded=true; location.reload(); });
+  });
+}
 </script>
 </body>
 </html>
