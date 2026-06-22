@@ -783,7 +783,7 @@
    "recorder": "Mr.Wang",
    "startDate": "2026-06-21",
    "createdAt": "2026-06-21T02:25:10.706Z",
-   "updatedAt": "2026-06-22T03:26:35.318Z",
+   "updatedAt": "2026-06-22T04:25:40.773Z",
    "status": "active",
    "archivedAt": null,
    "groups": [
@@ -1100,13 +1100,13 @@
     },
     "stu_f76pfg583": {
      "les_kaqicdpn3": {
-      "cls": null,
+      "cls": 0,
       "comp": 0
      }
     },
     "stu_rducg9583": {
      "les_kaqicdpn3": {
-      "cls": null,
+      "cls": 0,
       "comp": 0
      }
     },
@@ -1130,7 +1130,7 @@
     },
     "stu_x6qdpx583": {
      "les_kaqicdpn3": {
-      "cls": null,
+      "cls": 0,
       "comp": 0
      }
     },
@@ -1139,9 +1139,15 @@
       "cls": null,
       "comp": 0
      }
+    },
+    "stu_61xgm5583": {
+     "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     }
     }
    }
   }
  ],
- "publishedAt": "2026-06-22T03:26:43.732Z"
+ "publishedAt": "2026-06-22T04:26:00.383Z"
 }
