@@ -384,6 +384,37 @@ svg.chart{width:100%;height:auto;display:block;overflow:visible}
   .wrap{max-width:100%}
   .panel{border:1px solid #999;break-inside:avoid}
 }
+
+/* ============================================================
+   浅色主题 · 暖纸 + 铜金（html[data-theme="light"] 覆盖暗色 token）
+   ============================================================ */
+html[data-theme="light"]{
+  --bg:#f4ecda; --bg2:#efe6d0; --bg3:#e8ddc4; --bg4:#e0d3b6;
+  --ink:#2a2417; --ink2:#6b5f44; --ink3:#8a7c5c; --ink4:#c3b288;
+  --gold:#a07c1e; --gold2:#8a6a18; --gold3:#6b5210;
+  --red:#a3281f; --red2:#9c2a22; --purple:#6f3fb0; --blue:#2f6aa8; --green:#3d7a3d;
+  --line:rgba(120,92,24,.34); --line2:rgba(120,92,24,.16);
+  --glow-soft:0 1px 6px -2px rgba(120,92,24,.28);
+  --glow-gold:0 0 0 1px rgba(160,124,30,.45), 0 2px 10px -3px rgba(120,92,24,.30);
+  --glow-ur:0 2px 14px -3px rgba(160,124,30,.45), 0 0 2px rgba(120,92,24,.30);
+  --glow-red:0 2px 10px -3px rgba(163,40,31,.32);
+}
+html[data-theme="light"] body::before{ mix-blend-mode:multiply; opacity:.04; }
+html[data-theme="light"] body::after{ background:radial-gradient(120% 55% at 50% -12%,rgba(160,124,30,.10),transparent 60%); }
+html[data-theme="light"] h1.brand{ background:linear-gradient(180deg,#9a7820,#7a5e14 55%,#5f4910);-webkit-background-clip:text;background-clip:text;-webkit-text-fill-color:transparent; }
+html[data-theme="light"] h1.brand em{ -webkit-text-fill-color:#7a5e14; }
+html[data-theme="light"] .kpi .k-val,
+html[data-theme="light"] .seal-glyph,
+html[data-theme="light"] .cell.full,
+html[data-theme="light"] .tri button.on,
+html[data-theme="light"] .pv-tot .pn{ text-shadow:none; }
+html[data-theme="light"] .rk.r1{ color:#7a5e14; text-shadow:none; }
+html[data-theme="light"] .modal{ box-shadow:0 24px 60px -24px rgba(60,48,20,.45), var(--glow-gold); }
+/* 审查清单补充：毛玻璃底/冻结列 hover/遮罩/日期控件 */
+html[data-theme="light"] nav.tabs{ background:rgba(248,242,231,.9); }
+html[data-theme="light"] tr.stu-row:hover td.col-name{ background:var(--bg4); }
+html[data-theme="light"] .modal-bg{ background:rgba(40,30,15,.4); }
+html[data-theme="light"] input[type=date]{ color-scheme:light; }
 </style>
 </head>
 <body>
@@ -433,6 +464,12 @@ function hashPass(s){ let h=0x811c9dc5; s=String(s); for(let i=0;i<s.length;i++)
 function isAdmin(){ return ADMIN; }
 function roMsg(){ return ADMIN ? "归档赛季 · 只读" : "浏览模式：点右上角『解锁编辑』"; }
 function needAdmin(){ if(!ADMIN){ toast("浏览模式：点右上角『解锁编辑』"); return true; } return false; }
+/* ===== 深色/浅色主题 ===== */
+const THEME_KEY="myskme_theme";
+function curTheme(){ try{ return localStorage.getItem(THEME_KEY)==="light"?"light":"dark"; }catch(e){ return "dark"; } }
+function applyTheme(t){ if(t==="light") document.documentElement.setAttribute("data-theme","light"); else document.documentElement.removeAttribute("data-theme"); }
+function toggleTheme(){ const t=curTheme()==="light"?"dark":"light"; try{ localStorage.setItem(THEME_KEY,t); }catch(e){} applyTheme(t); renderStamps(); toast(t==="light"?"已切换浅色主题":"已切换深色主题"); }
+applyTheme(curTheme());   // 尽早应用，避免闪烁
 /* ===== 在线发布（Cloudflare Worker 代理 → 仓库 data.json，所有人可见） ===== */
 const PUBLISH_URL_DEFAULT = "https://myskme-publish.wzc1020.workers.dev"; // 你的 Worker 网址(命名 myskme-publish 即匹配；不同则在应用内『发布设置』改)
 const PUBLISH_KEY = "myskme_publish_url";    // 本地保存的 Worker 网址
@@ -887,7 +924,9 @@ const ICO = {
   unlock:'<svg viewBox="0 0 24 24"><rect x="5" y="10.5" width="14" height="9.5" rx="1.6"/><path d="M8 10.5V7.5a4 4 0 0 1 7.7-1.4"/><path d="M12 14v2.5"/></svg>',
   edit:'<svg viewBox="0 0 24 24"><path d="M14.5 5.6l3.9 3.9M4 20l1-4 10.5-10.5a1.7 1.7 0 0 1 2.4 0l1.1 1.1a1.7 1.7 0 0 1 0 2.4L8.5 19z"/></svg>',
   cloudup:'<svg viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M12 20.5v-6.6M9.6 16l2.4-2.3 2.4 2.3"/></svg>',
-  cloudok:'<svg viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M9.5 13.6l1.8 1.8 3.2-3.4"/></svg>'
+  cloudok:'<svg viewBox="0 0 24 24"><path d="M8 18h8.5a3.2 3.2 0 0 0 .3-6.38 4.8 4.8 0 0 0-9.23-1.04A3.4 3.4 0 0 0 8 18z"/><path d="M9.5 13.6l1.8 1.8 3.2-3.4"/></svg>',
+  sun:'<svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="4"/><path d="M12 2.5v2.4M12 19.1v2.4M2.5 12h2.4M19.1 12h2.4M5.4 5.4l1.7 1.7M17 17l1.7 1.7M18.6 5.4l-1.7 1.7M6.9 17l-1.7 1.7"/></svg>',
+  moon:'<svg viewBox="0 0 24 24"><path d="M20.5 14A8.5 8.5 0 1 1 10 3.5 6.7 6.7 0 0 0 20.5 14Z"/></svg>'
 };
 
 /* =========================================================
@@ -900,6 +939,7 @@ function renderStamps(){
     <span class="stamp">${ICO.stamp}开课 · <b>${esc(ss.startDate||"—")}</b></span>
     <span class="stamp">${ICO.clock}更新 · <b>${relTime(ss.updatedAt)}</b></span>
     <span class="stamp">${ICO.user}记录人 · <b>${esc(ss.recorder||"Mr.Wang")}</b></span>
+    <span class="stamp" style="cursor:pointer" onclick="toggleTheme()" title="切换深色 / 浅色">${curTheme()==="light"?ICO.moon:ICO.sun}${curTheme()==="light"?"深色":"浅色"}</span>
     ${ss.status==="archived"?`<span class="stamp" style="color:var(--red2);border-color:var(--red)">已归档 · 只读</span>`:""}
     <span class="stamp ${ADMIN?'lead':''}" style="cursor:pointer;${ADMIN?'':'border-color:var(--gold)'}" onclick="${ADMIN?'lockAdmin()':'unlockAdmin()'}" title="${ADMIN?'点此锁定为浏览模式':'输入密码解锁编辑'}">${ADMIN?ICO.edit+'管理员 · <b>点此锁定</b>':ICO.lock+'<b>浏览模式</b> · 解锁编辑'}</span>
     ${ADMIN ? (UNPUBLISHED
@@ -1139,12 +1179,35 @@ function delStudent(id){
     save(); render(); toast("已删除 "+st.name);
   },true);
 }
+function sortSessions(ss){ ss.sessions.sort((a,b)=> String(a.date||"9999-99-99").localeCompare(String(b.date||"9999-99-99")) || (a.index-b.index)); ss.sessions.forEach((s,i)=>s.index=i+1); }
+function suggestNextDate(ss){
+  const dates=ss.sessions.map(s=>s.date).filter(Boolean).sort();
+  if(dates.length){ const d=new Date(dates[dates.length-1]+"T00:00:00"); if(!isNaN(d)){ d.setDate(d.getDate()+7); return d.getFullYear()+"-"+String(d.getMonth()+1).padStart(2,"0")+"-"+String(d.getDate()).padStart(2,"0"); } }
+  return todayStr();
+}
 function addSession(){
   if(isLocked()) return toast(roMsg());
   const ss=curSeason();
-  const idx=ss.sessions.length+1;
-  ss.sessions.push({id:uid("les"),index:idx,date:todayStr(),note:"",winningGroupIds:[]});
-  save(); UI.lessonIdx=ss.sessions.length-1; render(); toast("已添加 第"+idx+"次课");
+  openModal(`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <h3>添加一次课</h3><div class="m-sub">选好日期（也可补录过去的课），系统会按日期自动排到正确次序。</div>
+    <div class="m-body">
+      <label class="fld" style="margin-bottom:10px">日期<input type="date" id="asDate" value="${suggestNextDate(ss)}"></label>
+      <label class="fld">备注 / 课题（可选，如 Unit 3）<input id="asNote" placeholder="可留空"></label>
+    </div>
+    <div class="m-foot"><button class="btn" onclick="closeModal()">取消</button>
+    <button class="btn gold" onclick="doAddSession()">添加</button></div>`);
+  setTimeout(()=>{ const i=$("#asDate"); if(i) i.focus(); },60);
+}
+function doAddSession(){
+  if(isLocked()) return toast(roMsg());
+  const ss=curSeason();
+  const date=$("#asDate").value||todayStr();
+  const note=($("#asNote").value||"").trim();
+  const id=uid("les");
+  ss.sessions.push({id,index:ss.sessions.length+1,date,note,winningGroupIds:[]});
+  sortSessions(ss);
+  save(); closeModal(); UI.lessonIdx=Math.max(0,ss.sessions.findIndex(s=>s.id===id)); render();
+  const se=ss.sessions.find(s=>s.id===id); toast("已添加 第"+(se?se.index:'')+"次课 · "+mmdd(date));
 }
 function editSession(id){
   if(isLocked()) return toast(roMsg());
@@ -1164,6 +1227,7 @@ function doEditSession(id){
   if(isLocked()) return toast(roMsg());
   const ss=curSeason(); const se=ss.sessions.find(s=>s.id===id); if(!se) return;
   se.date=$("#esDate").value; se.note=($("#esNote").value||"").trim();
+  sortSessions(ss); UI.lessonIdx=Math.max(0,ss.sessions.findIndex(s=>s.id===id));
   save(); closeModal(); render();
 }
 function setSessionDate(id,val){ if(isLocked())return; const ss=curSeason(); const se=ss.sessions.find(s=>s.id===id); if(se){se.date=val;save();renderStamps();} }
@@ -1919,6 +1983,8 @@ function cardSVG(ss,r,total){
     </g>
     <text x="220" y="106" text-anchor="middle" fill="#e8c768" font-size="15" letter-spacing="6">M Y S K M E</text>
     <text x="220" y="126" text-anchor="middle" fill="#a8a090" font-size="11" letter-spacing="3">王老师的英语课 · ${esc(ss.name)} · ${esc(ss.startDate||"")}</text>
+    <!-- 队徽（左上角） -->
+    ${g?`<g transform="translate(28 22)">${groupCrest(g.emblem||defaultEmblemFor(g.name,g.color,0), chex(g.color), 40)}</g>`:''}
     <!-- 稀有度宝石 -->
     <g transform="translate(388 44)"><path d="M0 -13 L11 0 L0 13 L-11 0 Z" fill="#0a0a0c" stroke="${tier.glow}" stroke-width="1.5" filter="url(#tglow)"/>
       <text y="4" text-anchor="middle" fill="${tier.col}" font-size="11" font-family="serif" letter-spacing="1">${tier.k}</text></g>
@@ -2085,7 +2151,8 @@ function renderRoute(){ if(PARENT_ID) renderParent(PARENT_ID); else render(); }
 function parentShell(inner){
   return `<div class="pv-wrap"><div class="pv-brand"><span>王老师的英语课 · MYSKME</span><div class="pv-line"></div></div>${inner}
     <button class="btn gold" style="width:100%;justify-content:center;margin-top:16px" onclick="location.href=location.pathname">查看完整榜</button>
-    <div class="muted" style="text-align:center;margin-top:10px;font-size:10px">myskme.github.io/myskme-scoreboard</div></div>`;
+    <div style="text-align:center;margin-top:12px"><span class="muted" style="cursor:pointer;font-size:11px;text-decoration:underline" onclick="toggleTheme();renderRoute()">${curTheme()==="light"?"切换深色":"切换浅色"}</span></div>
+    <div class="muted" style="text-align:center;margin-top:8px;font-size:10px">myskme.github.io/myskme-scoreboard</div></div>`;
 }
 function renderParent(sid){
   const tabsEl=document.getElementById("tabs"); if(tabsEl) tabsEl.style.display="none";
@@ -2118,10 +2185,10 @@ function parentTrendSVG(ss,st){
   let mine=[],cls=[]; for(let i=0;i<n;i++){ const se=ss.sessions[i], c=getCell(ss,st.id,se.id); if(isRecorded(c)) mine.push([xs(i),ys(cellTotal(c))]); cls.push([xs(i),ys(sessionAvg(ss,se).avg)]); }
   const path=a=>a.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+','+p[1].toFixed(1)).join(' ');
   return `<svg viewBox="0 0 ${W} ${H}" style="width:100%;height:auto;margin:8px 0 2px">
-    <text x="${W-2}" y="10" text-anchor="end" fill="#a8a090" font-size="9">— 本人　--- 班级均分</text>
-    <path d="${path(cls)}" fill="none" stroke="#6a6458" stroke-width="1.4" stroke-dasharray="4 4"/>
-    ${mine.length?`<path d="${path(mine)}" fill="none" stroke="#e8c768" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`:''}
-    ${mine.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="#e8c768"/>`).join('')}
+    <text x="${W-2}" y="10" text-anchor="end" fill="var(--ink2)" font-size="9">— 本人　--- 班级均分</text>
+    <path d="${path(cls)}" fill="none" stroke="var(--ink3)" stroke-width="1.4" stroke-dasharray="4 4"/>
+    ${mine.length?`<path d="${path(mine)}" fill="none" stroke="var(--gold2)" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"/>`:''}
+    ${mine.map(p=>`<circle cx="${p[0].toFixed(1)}" cy="${p[1].toFixed(1)}" r="2.6" fill="var(--gold2)"/>`).join('')}
   </svg>`;
 }
 
@@ -2134,7 +2201,7 @@ function emptyState(t,s){
 /* ---------- 启动 ---------- */
 document.querySelectorAll(".tab").forEach(t=>t.addEventListener("click",()=>{UI.tab=t.dataset.tab;render();window.scrollTo({top:0,behavior:'smooth'});}));
 // 暴露给内联 onclick
-Object.assign(window,{setSbView,setTri,addStudent,doAddStudent,renameStudent,doRename,delStudent,addSession,editSession,doEditSession,delSession,teamBattle,doTeamBattle,setSessionDate,
+Object.assign(window,{setSbView,setTri,addStudent,doAddStudent,renameStudent,doRename,delStudent,addSession,doAddSession,editSession,doEditSession,delSession,teamBattle,doTeamBattle,setSessionDate,toggleTheme,
   closeModal,confirmModal,assignGroup,autoGroup,addGroup,renameGroup,delGroup,fixAnomaly,
   switchSeason,newSeason,doNewSeason,editSeason,doEditSeason,archiveSeason,unarchive,dupSeason,delSeason,resetKeepRoster,resetAll,
   exportJSON,importJSON,restoreBackup,toggleFx,exportCSV,showDeploy,showCard,showPoster,svgToPng,
