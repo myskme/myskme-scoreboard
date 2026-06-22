@@ -175,8 +175,27 @@ table.sb th,table.sb td{border-right:1px solid var(--line2);border-bottom:1px so
 table.sb thead th{background:var(--bg3);position:sticky;top:34px;z-index:5;font-weight:400;color:var(--ink2);font-size:11px;letter-spacing:.06em;padding:7px 4px}
 table.sb thead tr.h1 th{top:0;border-bottom:1px solid var(--line);color:var(--gold2);font-size:12px;letter-spacing:.1em;padding:9px 4px}
 .ses-date{display:block;color:var(--ink3);font-size:10px;margin-top:2px;letter-spacing:.02em}
-.ses-edit{cursor:pointer}
-.ses-edit:hover{color:var(--gold2)}
+.ses-edit{position:relative}
+.ses-h{cursor:pointer}
+.ses-h:hover{color:var(--gold2)}
+.ses-note{display:inline-flex;cursor:pointer;margin-left:5px;vertical-align:middle;opacity:.4;transition:opacity .15s,transform .15s var(--ease-back)}
+.ses-note svg{width:13px;height:13px;stroke:var(--ink3);fill:none;stroke-width:1.6}
+.ses-note:hover{opacity:1;transform:translateY(-1px)}
+.ses-note.on{opacity:1}
+.ses-note.on svg{stroke:var(--gold2)}
+/* 次课备注：展示块 + 编辑 */
+.note-view{display:flex;gap:10px;align-items:flex-start;background:var(--bg2);border:1px solid var(--line2);border-left:3px solid var(--gold);border-radius:var(--r);padding:10px 14px;margin-bottom:10px;box-shadow:var(--elev1)}
+.note-view.priv{border-left-color:var(--red);background:linear-gradient(90deg,rgba(168,48,48,.06),transparent 60%)}
+.note-tag{display:inline-flex;align-items:center;gap:5px;flex:none;font-size:11px;letter-spacing:.08em;color:var(--gold2);white-space:nowrap;padding-top:1px}
+.note-view.priv .note-tag{color:var(--red2)}
+.note-tag svg{width:14px;height:14px;stroke:currentColor;fill:none;stroke-width:1.5}
+.note-text{font-size:13.5px;line-height:1.7;color:var(--ink);word-break:break-word}
+.note-dot{display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--gold2);margin-left:6px;vertical-align:middle;box-shadow:0 0 5px var(--gold2)}
+.note-flbl{display:flex;align-items:center;gap:6px;font-size:12px;letter-spacing:.06em;color:var(--gold2);margin-bottom:6px}
+.note-flbl svg{width:15px;height:15px;stroke:currentColor;fill:none;stroke-width:1.5}
+.note-ta{width:100%;background:var(--bg);border:1px solid var(--line);border-radius:var(--r);color:var(--ink);font-family:var(--serif);font-size:14px;line-height:1.6;padding:9px 11px;resize:vertical;transition:border-color .15s}
+.note-ta:focus{outline:none;border-color:var(--gold)}
+.note-hint{font-size:11px;color:var(--ink3);margin-top:10px;line-height:1.6}
 .col-seq{width:34px}
 th.col-name,td.col-name{position:sticky;left:0;z-index:6;background:var(--bg3);text-align:left;min-width:128px;padding:0}
 table.sb thead th.col-name{z-index:7}
@@ -884,7 +903,7 @@ function normalize(d){
     if(Object.keys(stmap).length||Object.keys(smap).length){ const ns={}; Object.keys(s.scores).forEach(stid=>{ const inner=s.scores[stid]||{}; const ni={}; Object.keys(inner).forEach(seid=>{ ni[smap[seid]||seid]=inner[seid]; }); ns[stmap[stid]||stid]=ni; }); s.scores=ns; }
     s.groups.forEach((g,i)=>{ g.name=(g.name==null?"":String(g.name))||("第"+(i+1)+"组"); g.color=g.color||GROUP_COLORS[i%GROUP_COLORS.length]; if(!g.emblem||!EMBLEMS[g.emblem]) g.emblem=defaultEmblemFor(g.name,g.color,i); });
     s.students.forEach((st,i)=>{ st.name=(st.name==null?"":String(st.name))||("学生"+(i+1)); if(st.active===undefined) st.active=true; if(st.order==null) st.order=i+1; });
-    s.sessions.forEach((se,i)=>{ if(se.index==null) se.index=i+1; se.date=se.date||todayStr(); if(!Array.isArray(se.winningGroupIds)) se.winningGroupIds=[]; });
+    s.sessions.forEach((se,i)=>{ if(se.index==null) se.index=i+1; se.date=se.date||todayStr(); if(!Array.isArray(se.winningGroupIds)) se.winningGroupIds=[]; if(typeof se.note!=="string") se.note=""; if(typeof se.noteAdmin!=="string") se.noteAdmin=""; });
   });
   if(!d.seasons.length) return freshDB();
   if(!d.currentSeasonId || !d.seasons.some(s=>s.id===d.currentSeasonId)) d.currentSeasonId=d.seasons[0].id;
@@ -1224,7 +1243,12 @@ function boardGrid(ss){
   const ranks={}; rankList(ss).forEach(r=>ranks[r.st.id]={total:r.total,rank:r.rank});
   const maxTotal = Math.max(1,...Object.values(ranks).map(r=>r.total));
   let th1=`<tr class="h1"><th class="col-seq">序</th><th class="col-name">姓名 / 小组</th>`;
-  ss.sessions.forEach(se=>{ th1+=`<th colspan="2" class="ses-edit" onclick="editSession('${se.id}')">第${se.index}次课<span class="ses-date">${mmdd(se.date)}</span></th>`; });
+  ss.sessions.forEach(se=>{
+    const pub=se.note&&se.note.trim(), prv=se.noteAdmin&&se.noteAdmin.trim();
+    const showNote = !isLocked() || pub, noteOn = !isLocked()?(pub||prv):pub;
+    const noteInd = showNote?`<span class="ses-note ${noteOn?'on':''}" onclick="event.stopPropagation();sessionNoteModal('${se.id}')" title="本次课备注"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M15 4v3h3M8.5 12h7M8.5 15.5h5"/></svg></span>`:'';
+    th1+=`<th colspan="2" class="ses-edit"><span class="ses-h" onclick="editSession('${se.id}')">第${se.index}次课<span class="ses-date">${mmdd(se.date)}</span></span>${noteInd}</th>`;
+  });
   th1+=`<th rowspan="2" class="col-cum">累计</th></tr>`;
   let th2=`<tr><th></th><th class="col-name"></th>`;
   ss.sessions.forEach(()=>{ th2+=`<th>课堂</th><th>作文</th>`; });
@@ -1288,9 +1312,11 @@ function boardLesson(ss){
     <label class="fld">选择次课<select onchange="UI.lessonIdx=+this.value;render()">${opts}</select></label>
     <label class="fld">日期<input type="date" value="${se.date||''}" onchange="setSessionDate('${se.id}',this.value)" ${isLocked()?'disabled':''}></label>
     <span class="spacer grow"></span>
+    ${!isLocked()?`<button class="btn sm" onclick="sessionNoteModal('${se.id}')"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M15 4v3h3M8.5 12h7M8.5 15.5h5"/></svg>备注${(se.note&&se.note.trim())||(se.noteAdmin&&se.noteAdmin.trim())?'<i class="note-dot"></i>':''}</button>`:''}
     <button class="btn sm gold" onclick="teamBattle('${se.id}')" ${isLocked()?'disabled':''}><svg viewBox="0 0 24 24"><path d="M6 21V3.5"/><path d="M6 5h11l-3 3.2 3 3.3H6"/></svg>团体战结算</button>
     <button class="btn sm danger" onclick="delSession('${se.id}')" ${isLocked()?'disabled':''}>删除本次课</button>
   </div>
+  ${sessionNoteView(se)}
   <div class="row" style="margin-bottom:10px">
     <span class="pill">本次均分 ${stat.avg.toFixed(2)}</span>
     <span class="pill">已录 ${stat.n}/${activeStudents(ss).length}</span>
@@ -1299,6 +1325,43 @@ function boardLesson(ss){
     ${(se.winningGroupIds&&se.winningGroupIds.length)?`<span class="pill" style="color:var(--gold2);border-color:var(--gold)">胜组：${se.winningGroupIds.map(id=>esc((groupById(ss,id)||{}).name||'')).join('、')}</span>`:""}
   </div>
   <div class="lesson-list">${rows}</div>`;
+}
+// 次课备注：公开(所有人可读) + 私密(仅管理员)。编辑走弹窗，避免与计分点击的 render 抢焦点
+function sessionNoteView(se){
+  const pub=(se.note||"").trim(), prv=(se.noteAdmin||"").trim();
+  const fmt=t=>esc(t).replace(/\n/g,"<br>");
+  let out="";
+  if(pub) out+=`<div class="note-view"><span class="note-tag"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M15 4v3h3M8.5 12h7M8.5 15.5h5"/></svg>本次课备注</span><div class="note-text">${fmt(pub)}</div></div>`;
+  if(!isLocked() && prv) out+=`<div class="note-view priv"><span class="note-tag"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>私密备注 · 仅管理员可见</span><div class="note-text">${fmt(prv)}</div></div>`;
+  return out;
+}
+function sessionNoteModal(sesId){
+  const ss=curSeason(); const se=(ss.sessions||[]).find(s=>s.id===sesId); if(!se) return;
+  const X=`<button class="icon-btn modal-close" onclick="closeModal()"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>`;
+  if(isLocked()){
+    const pub=(se.note||"").trim();
+    return openModal(`${X}<h3>第${se.index}次课 · 备注</h3><div class="m-sub">${mmdd(se.date)}</div>
+      <div class="m-body"><div class="note-text">${pub?esc(pub).replace(/\n/g,"<br>"):'<span class="muted">（本次课暂无公开备注）</span>'}</div></div>
+      <div class="m-foot"><button class="btn" onclick="closeModal()">关闭</button></div>`);
+  }
+  openModal(`${X}<h3>第${se.index}次课 · 备注</h3><div class="m-sub">${mmdd(se.date)} · 记下课时进度或个别学生提醒，方便日后查阅</div>
+    <div class="m-body">
+      <label class="note-flbl"><svg viewBox="0 0 24 24"><path d="M5 4h11l3 3v13H5z"/><path d="M15 4v3h3"/></svg>公开备注 · 所有人可见</label>
+      <textarea id="notepub" class="note-ta" rows="3" placeholder="本节课进度 / 通知…（所有访客都能看到）">${esc(se.note||"")}</textarea>
+      <label class="note-flbl" style="margin-top:14px"><svg viewBox="0 0 24 24"><rect x="5" y="11" width="14" height="9" rx="1.5"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>私密备注 · 仅管理员可见</label>
+      <textarea id="notepriv" class="note-ta" rows="3" placeholder="给自己的提醒、个别学生留意点…（浏览者看不到）">${esc(se.noteAdmin||"")}</textarea>
+      <div class="note-hint"><svg viewBox="0 0 24 24" style="width:13px;height:13px;vertical-align:-2px"><path d="M12 3l9 16H3z"/><path d="M12 10v4M12 17h.01"/></svg> 数据存于公开仓库，私密备注仅在界面对浏览者隐藏；真正敏感的隐私信息请勿填写。</div>
+    </div>
+    <div class="m-foot"><button class="btn" onclick="closeModal()">取消</button>
+    <button class="btn gold" onclick="saveSessionNote('${se.id}')">保存备注</button></div>`);
+}
+function saveSessionNote(sesId){
+  if(isLocked()) return toast(roMsg());
+  const ss=curSeason(); const se=(ss.sessions||[]).find(s=>s.id===sesId); if(!se) return;
+  const pub=$("#notepub"), prv=$("#notepriv");
+  if(pub) se.note=String(pub.value||"");
+  if(prv) se.noteAdmin=String(prv.value||"");
+  save(); closeModal(); render(); toast("备注已保存");
 }
 function triBtns(stuId,sesId,field,v){
   const mx=maxFor(field);
@@ -2474,7 +2537,7 @@ Object.assign(window,{setSbView,setTri,addStudent,doAddStudent,renameStudent,doR
   exportJSON,importJSON,restoreBackup,toggleFx,exportCSV,showDeploy,showCard,showPoster,svgToPng,
   unlockAdmin,doUnlock,lockAdmin,doLock,hashPass,maybeConflict,resolveConflict,
   publish,doPublishFromModal,doPublish,openPublishSetup,savePublishUrl,
-  groupEditModal,gePick,geSave,shareQR,copyShare,downloadQRCard,batchQR,undo,redo,UI});
+  groupEditModal,gePick,geSave,shareQR,copyShare,downloadQRCard,batchQR,undo,redo,sessionNoteModal,saveSessionNote,UI});
 try{ ADMIN = localStorage.getItem(ADMIN_KEY)==="1"; }catch(e){ ADMIN=false; }
 try{ const sv=localStorage.getItem("myskme_sbview"); if(sv==="grid"||sv==="lesson") UI.sbView=sv; }catch(e){}   // 记住记分台视图偏好
 PARENT_ID = new URLSearchParams(location.search).get("s");   // 家长视图：?s=<学生id>
