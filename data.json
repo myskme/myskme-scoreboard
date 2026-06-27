@@ -237,35 +237,40 @@
      "index": 1,
      "date": "2026-06-03",
      "note": "",
-     "winningGroupIds": []
+     "winningGroupIds": [],
+     "noteAdmin": ""
     },
     {
      "id": "les_2",
      "index": 2,
      "date": "2026-06-06",
      "note": "",
-     "winningGroupIds": []
+     "winningGroupIds": [],
+     "noteAdmin": ""
     },
     {
      "id": "les_3",
      "index": 3,
      "date": "2026-06-10",
      "note": "",
-     "winningGroupIds": []
+     "winningGroupIds": [],
+     "noteAdmin": ""
     },
     {
      "id": "les_4",
      "index": 4,
      "date": "2026-06-13",
      "note": "",
-     "winningGroupIds": []
+     "winningGroupIds": [],
+     "noteAdmin": ""
     },
     {
      "id": "les_5",
      "index": 5,
      "date": "2026-06-17",
      "note": "",
-     "winningGroupIds": []
+     "winningGroupIds": [],
+     "noteAdmin": ""
     }
    ],
    "scores": {
@@ -783,7 +788,7 @@
    "recorder": "Mr.Wang",
    "startDate": "2026-06-21",
    "createdAt": "2026-06-21T02:25:10.706Z",
-   "updatedAt": "2026-06-22T04:25:40.773Z",
+   "updatedAt": "2026-06-27T05:21:43.080Z",
    "status": "active",
    "archivedAt": null,
    "groups": [
@@ -1004,6 +1009,14 @@
      "index": 1,
      "date": "2026-06-21",
      "note": "",
+     "winningGroupIds": [],
+     "noteAdmin": ""
+    },
+    {
+     "id": "les_p3lqihvqy",
+     "index": 2,
+     "date": "2026-06-28",
+     "note": "",
      "winningGroupIds": []
     }
    ],
@@ -1012,10 +1025,18 @@
      "les_kaqicdpn3": {
       "cls": null,
       "comp": 2
+     },
+     "les_p3lqihvqy": {
+      "cls": null,
+      "comp": 2
      }
     },
     "stu_6t7ta7583": {
      "les_kaqicdpn3": {
+      "cls": null,
+      "comp": 2
+     },
+     "les_p3lqihvqy": {
       "cls": null,
       "comp": 2
      }
@@ -1149,5 +1170,5 @@
    }
   }
  ],
- "publishedAt": "2026-06-22T04:26:00.383Z"
+ "publishedAt": "2026-06-27T05:21:53.191Z"
 }
