@@ -75,6 +75,15 @@ h1.brand em{font-style:normal;-webkit-text-fill-color:var(--gold2);letter-spacin
   transition:border-color .25s,box-shadow .25s,transform .25s var(--ease-back)}
 .stamp:hover{border-color:var(--gold);transform:translateY(-2px);box-shadow:var(--glow-soft)}
 .stamp.lead{color:var(--gold2);box-shadow:var(--glow-soft)}
+/* 管理员入口：突出显示，方便老师本人一眼找到并点击 */
+.stamp.admin-cta{color:var(--gold2);border-color:var(--gold);background:linear-gradient(180deg,rgba(201,166,74,.2),rgba(201,166,74,.06));box-shadow:var(--glow-gold)}
+.stamp.admin-cta b{color:var(--gold2);font-weight:600}
+.stamp.admin-cta svg{stroke:var(--gold2)}
+.stamp.admin-cta::before{opacity:1;width:5px;height:5px;animation:dirtyPulse 1.8s ease-in-out infinite}
+.stamp.admin-cta:hover{transform:translateY(-2px);box-shadow:var(--glow-gold),0 4px 12px -8px rgba(0,0,0,.5);filter:brightness(1.06)}
+.stamp.admin-on{color:var(--gold2);border-color:var(--gold);background:linear-gradient(180deg,rgba(201,166,74,.14),rgba(201,166,74,.04))}
+.stamp.admin-on b{color:var(--gold2);font-weight:600}
+.stamp.admin-on svg{stroke:var(--gold2)}
 .stamp svg{width:14px;height:14px;stroke:var(--gold);fill:none;stroke-width:1.4;flex:none}
 .stamp b{color:var(--ink);font-weight:500}
 .dirty-dot{width:7px;height:7px;border-radius:50%;background:var(--gold2);box-shadow:0 0 6px var(--gold2);animation:dirtyPulse 1.4s ease-in-out infinite;flex:none}
@@ -1174,7 +1183,7 @@ function renderStamps(){
     <span class="stamp">${ICO.user}记录人 · <b>${esc(ss.recorder||"Mr.Wang")}</b></span>
     <span class="stamp" style="cursor:pointer" onclick="toggleTheme()" title="主题：深色 / 浅色 / 跟随系统（点击切换）">${({dark:ICO.moon,light:ICO.sun,auto:ICO.auto})[themeMode()]}${THEME_LABEL[themeMode()]}</span>
     ${ss.status==="archived"?`<span class="stamp" style="color:var(--red2);border-color:var(--red)">已归档 · 只读</span>`:""}
-    <span class="stamp ${ADMIN?'lead':''}" style="cursor:pointer;${ADMIN?'':'border-color:var(--gold)'}" onclick="${ADMIN?'lockAdmin()':'unlockAdmin()'}" title="${ADMIN?'点此锁定为浏览模式':'输入密码解锁编辑'}">${ADMIN?ICO.edit+'管理员 · <b>点此锁定</b>':ICO.lock+'<b>浏览模式</b> · 解锁编辑'}</span>
+    <span class="stamp ${ADMIN?'admin-on':'admin-cta'}" style="cursor:pointer" onclick="${ADMIN?'lockAdmin()':'unlockAdmin()'}" title="${ADMIN?'点此锁定为浏览模式':'输入密码解锁编辑'}">${ADMIN?ICO.edit+'<b>管理员</b> · 点此锁定':ICO.lock+'<b>解锁编辑</b> · 管理员'}</span>
     ${ADMIN ? (UNPUBLISHED
        ? `<span class="stamp" style="cursor:pointer;color:var(--gold2);border-color:var(--gold);box-shadow:var(--glow-soft)" onclick="publish()" title="把当前改动保存到网上，所有人可见"><span class="dirty-dot"></span>${ICO.cloudup}<b>发布到网上</b></span>`
        : `<span class="stamp" style="cursor:pointer;color:var(--ink2)" onclick="openPublishSetup()" title="在线发布设置">${ICO.cloudok}已与网上同步</span>`) : ""}`;
